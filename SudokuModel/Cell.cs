@@ -4,14 +4,14 @@
     {
         private readonly byte X;
         private readonly byte Y;
-        public Cell(byte x, byte y)
+        public readonly byte Index;
+        public Cell(byte i)
         {
-            if (x < 0 || x > 8)
-                throw new ArgumentException($"{x} coordinate is not supported");
-            if (y < 0 || y > 8)
-                throw new ArgumentException($"{y} coordinate is not supported");
-            X = x;
-            Y = y;
+            if (i < 0 || i > 81)
+                throw new ArgumentException($"{i} cell index is not supported");
+            X = (byte)(i / 9);
+            Y = (byte)(i % 9);
+            Index = i;
             Answered = false;
         }
 
@@ -27,7 +27,7 @@
             }
         }
 
-        private readonly byte[] suggestions = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        private readonly byte?[] suggestions = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         public byte[] GetSuggestions()
         {
             byte[] copy = new byte[9];
@@ -44,7 +44,17 @@
         {
             if (suggestedNumber < 1 || suggestedNumber > 9)
                 throw new ArgumentException($"suggested number is out of range, cell {X},{Y}");
-            suggestions[suggestedNumber - 1] = suggestedNumber;
+            suggestions[suggestedNumber - 1] = null;
+        }
+
+        public Cell Copy()
+        {
+            var copy = new Cell(Index);
+            copy.Answered = Answered; 
+            copy.Value = Value;
+            foreach (byte suggestion in suggestions)
+                copy.AddSuggestion(suggestion);
+            return copy;
         }
     }
 }
