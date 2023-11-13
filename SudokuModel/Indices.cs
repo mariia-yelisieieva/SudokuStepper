@@ -2,17 +2,12 @@
 {
     public static class Indices
     {
-        private static Dictionary<byte, byte[]> adjacentIndices = new();
-
         public static byte[] GetAdjacentIndices(byte currentIndex)
         {
-            if (adjacentIndices.TryGetValue(currentIndex, out var adjacent))
-                return adjacent;
-            
             var result = new List<byte>();
 
             byte column = (byte)(currentIndex % 9);
-            byte row = (byte)(currentIndex / 9 * 9);
+            byte row = (byte)(currentIndex / 9);
 
             // add vertical row
             byte i = column;
@@ -41,8 +36,8 @@
             result.Add((byte)(firstSquareIndex + 19));
             result.Add((byte)(firstSquareIndex + 20));
 
+            result.RemoveAll(num => num == currentIndex);
             var qwe = result.Distinct().OrderBy(x => x).ToArray();
-            adjacentIndices.Add(currentIndex, qwe);
             return qwe;
         }
     }
