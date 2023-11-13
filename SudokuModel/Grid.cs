@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SudokuModel
-{   
+﻿namespace SudokuModel
+{
     public class Grid
     {
         internal readonly Cell[] Cells = new Cell[81];
@@ -41,10 +34,12 @@ namespace SudokuModel
             Cells[y * 9 + x].Value = value;
         }
 
-        public void CheckSuggestionsBatch()
+        public void RefreshSuggestions()
         {
+
             for (byte i = 0; i < Cells.Length; i++)
             {
+                AddSuggestion(i, new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9});
                 byte[] adjacentIndices = Indices.GetAdjacentIndices(i);
                 byte[] adjacentValues = Cells.Where(cell => adjacentIndices.Contains(cell.Index)).Select(cell => cell.Value)
                     .Where(value => value != 0).Distinct().OrderBy(value => value).ToArray();

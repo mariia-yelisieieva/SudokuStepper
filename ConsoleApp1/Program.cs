@@ -1,5 +1,4 @@
-﻿using SudokuModel;
-using SudokuStepper;
+﻿using SudokuStepper;
 
 var game = new Game();
 game.Initialize(new byte[]

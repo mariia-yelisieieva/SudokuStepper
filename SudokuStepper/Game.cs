@@ -14,7 +14,7 @@ namespace SudokuStepper
         public void AddSuggestions()
         {
             Step1 = InitialStep.Copy();
-            Step1.CheckSuggestionsBatch();
+            Step1.RefreshSuggestions();
         }
     }
 }
