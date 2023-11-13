@@ -14,20 +14,10 @@
             Y = (byte)(i % 9);
             Index = i;
             AdjacentIndices = Indices.GetAdjacentIndices(i);
-            Answered = false;
         }
 
-        public bool Answered { get; set; } = false;
-        private byte value = 0;
-        public byte Value
-        {
-            get => value;
-            set
-            {
-                Answered = true; 
-                this.value = value;
-            }
-        }
+        public bool Answered => Value != 0;
+        public byte Value { get; set; } = 0;
 
         public readonly byte[] Suggestions = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         public byte[] GetSuggestions()
@@ -53,7 +43,6 @@
         {
             var copy = new Cell(Index)
             {
-                Answered = Answered,
                 Value = Value
             };
             foreach (byte suggestion in Suggestions)

@@ -20,7 +20,7 @@
             // add horizontal row
             i = row;
             for (byte t = 0; t < 9; t++)
-                result.Add(t);
+                result.Add((byte)(row * 9 + t));
 
             // add square
             byte y = (byte)(currentIndex / 27);
