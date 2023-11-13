@@ -20,6 +20,7 @@
                     continue;
                 Cells[i].Value = cellValues[i];
             }
+            RefreshSuggestions();
         }
 
         public void Answer(byte x, byte y, byte value)
@@ -34,9 +35,8 @@
             Cells[y * 9 + x].Value = value;
         }
 
-        public void RefreshSuggestions()
+        private void RefreshSuggestions()
         {
-
             for (byte i = 0; i < Cells.Length; i++)
             {
                 AddSuggestion(i, new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9});
@@ -47,24 +47,39 @@
             }
         }
 
-        public void AddSuggestion(byte index, params byte[] values)
+        private void AddSuggestion(byte index, params byte[] values)
         {
             foreach (byte value in values)
                 Cells[index].AddSuggestion(value);
         }
 
-        public void RemoveSuggestion(byte index, params byte[] values)
+        private void RemoveSuggestion(byte index, params byte[] values)
         {
             foreach (byte value in values)
                 Cells[index].RemoveSuggestion(value);
         }
 
+        public void FillOneSuggestionCells()
+        {
+            foreach (Cell cell in Cells)
+            {
+                if (cell.GetSuggestions().Count(x => x != 0) == 1)
+                    cell.Value = cell.GetSuggestions().SingleOrDefault(x => x != 0);
+            }
+        }
+
         public Grid Copy()
         {
-            var copy = new Grid(cellValues);
-            for (int i = 0; i < Cells.Length; i++)
-                copy.Cells[i] = Cells[i].Copy();
+            var copy = new Grid(Cells.Select(c => c.Value).ToArray());
             return copy;
+        }
+
+        public string GetCellValue(byte i, byte j)
+        {
+            byte value = Cells[i * 9 + j].Value;
+            if (value == 0)
+                return "_";
+            return value.ToString();
         }
     }
 }

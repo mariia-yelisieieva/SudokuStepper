@@ -19,24 +19,27 @@
         public bool Answered => Value != 0;
         public byte Value { get; set; } = 0;
 
-        public readonly byte[] Suggestions = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        private readonly byte[] suggestions = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         public byte[] GetSuggestions()
         {
-            byte[] copy = new byte[9];
-            Array.Copy(Suggestions, copy, Suggestions.Length);
+            if (Answered)
+                return new byte[0];
+            byte[] realSuggestions = suggestions.Where(s => s != 0).ToArray();
+            byte[] copy = new byte[realSuggestions.Length];
+            Array.Copy(realSuggestions, copy, realSuggestions.Length);
             return copy;
         }
         public void AddSuggestion(byte suggestedNumber)
         {
             if (suggestedNumber < 1 || suggestedNumber > 9)
                 throw new ArgumentException($"suggested number is out of range, cell {X},{Y}");
-            Suggestions[suggestedNumber - 1] = suggestedNumber;
+            suggestions[suggestedNumber - 1] = suggestedNumber;
         }
         public void RemoveSuggestion(byte suggestedNumber)
         {
             if (suggestedNumber < 1 || suggestedNumber > 9)
                 throw new ArgumentException($"suggested number is out of range, cell {X},{Y}");
-            Suggestions[suggestedNumber - 1] = 0;
+            suggestions[suggestedNumber - 1] = 0;
         }
 
         public Cell Copy()
@@ -45,8 +48,8 @@
             {
                 Value = Value
             };
-            foreach (byte suggestion in Suggestions)
-                copy.AddSuggestion(suggestion);
+            //foreach (byte suggestion in GetSuggestions())
+            //    copy.AddSuggestion(suggestion);
             return copy;
         }
     }
