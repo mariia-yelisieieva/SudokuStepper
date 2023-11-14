@@ -40,8 +40,8 @@
             for (byte i = 0; i < Cells.Length; i++)
             {
                 AddSuggestion(i, new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9});
-                byte[] adjacentIndices = Cells[i].AdjacentIndices;
-                byte[] adjacentValues = Cells.Where(cell => adjacentIndices.Contains(cell.Index)).Select(cell => cell.Value)
+                byte[] adjacentIndices = Cells[i].Coordinates.AdjacentIndices;
+                byte[] adjacentValues = Cells.Where(cell => adjacentIndices.Contains(cell.Coordinates.Index)).Select(cell => cell.Value)
                     .Where(value => value != 0).Distinct().OrderBy(value => value).ToArray();
                 RemoveSuggestion(i, adjacentValues);
             }

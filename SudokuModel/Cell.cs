@@ -2,18 +2,12 @@
 {
     internal class Cell
     {
-        private readonly byte X;
-        private readonly byte Y;
-        public byte Index { get; }
-        public byte[] AdjacentIndices { get; }
-        public Cell(byte i)
+        public Coordinates Coordinates { get; }
+        public Cell(byte index)
         {
-            if (i < 0 || i > 81)
-                throw new ArgumentException($"{i} cell index is not supported");
-            X = (byte)(i / 9);
-            Y = (byte)(i % 9);
-            Index = i;
-            AdjacentIndices = Indices.GetAdjacentIndices(i);
+            if (index < 0 || index > 81)
+                throw new ArgumentException($"{index} cell index is not supported");
+            Coordinates = new Coordinates(index);
         }
 
         public bool Answered => Value != 0;
@@ -32,24 +26,22 @@
         public void AddSuggestion(byte suggestedNumber)
         {
             if (suggestedNumber < 1 || suggestedNumber > 9)
-                throw new ArgumentException($"suggested number is out of range, cell {X},{Y}");
+                throw new ArgumentException($"suggested number is out of range, cell {Coordinates.X},{Coordinates.Y}");
             suggestions[suggestedNumber - 1] = suggestedNumber;
         }
         public void RemoveSuggestion(byte suggestedNumber)
         {
             if (suggestedNumber < 1 || suggestedNumber > 9)
-                throw new ArgumentException($"suggested number is out of range, cell {X},{Y}");
+                throw new ArgumentException($"suggested number is out of range, cell {Coordinates.X},{Coordinates.Y}");
             suggestions[suggestedNumber - 1] = 0;
         }
 
         public Cell Copy()
         {
-            var copy = new Cell(Index)
+            var copy = new Cell(Coordinates.Index)
             {
                 Value = Value
             };
-            //foreach (byte suggestion in GetSuggestions())
-            //    copy.AddSuggestion(suggestion);
             return copy;
         }
     }
