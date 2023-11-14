@@ -59,7 +59,7 @@
                 Cells[index].RemoveSuggestion(value);
         }
 
-        public void FillOneSuggestionCells()
+        public void FillSingleSuggestionCells()
         {
             foreach (Cell cell in Cells)
             {

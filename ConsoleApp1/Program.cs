@@ -16,7 +16,7 @@ game.Initialize(new byte[]
 });
 PrintGrid("initial grid", game.InitialStep);
 
-game.FillOneSuggestionCells();
+game.FillSingleSuggestionCells();
 PrintGrid("filled single suggestion cells", game.Step1);
 
 Console.ReadLine();

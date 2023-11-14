@@ -11,10 +11,10 @@ namespace SudokuStepper
         }
 
         public Grid Step1;
-        public void FillOneSuggestionCells()
+        public void FillSingleSuggestionCells()
         {
             Step1 = InitialStep.Copy();
-            Step1.FillOneSuggestionCells();
+            Step1.FillSingleSuggestionCells();
         }
     }
 }
