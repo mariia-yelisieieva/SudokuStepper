@@ -3,13 +3,10 @@
     public class Grid
     {
         internal readonly Cell[] Cells = new Cell[81];
-
-        private readonly byte[] cellValues;
         public Grid(params byte[] cellValues)
         {
             if (cellValues.Length != 81)
                 throw new ArgumentException();
-            this.cellValues = cellValues;
 
             for (byte i = 0; i < 81; i++)
                 Cells[i] = new Cell(i);
@@ -40,11 +37,31 @@
             for (byte i = 0; i < Cells.Length; i++)
             {
                 AddSuggestion(i, new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9});
-                byte[] adjacentIndices = Cells[i].Coordinates.AdjacentIndices;
-                byte[] adjacentValues = Cells.Where(cell => adjacentIndices.Contains(cell.Coordinates.Index)).Select(cell => cell.Value)
-                    .Where(value => value != 0).Distinct().OrderBy(value => value).ToArray();
+                byte[] adjacentValues = GetCellValues(Cells[i].Coordinates.AdjacentIndices);
                 RemoveSuggestion(i, adjacentValues);
             }
+        }
+
+        private byte[] GetCellValues(byte[] indices)
+        {
+            List<byte> result = new();
+            for (int i = 0; i < indices.Length; i++)
+            {
+                byte value = Cells[indices[i]].Value;
+                if (value != 0)
+                    result.Add(value);
+            }
+            return result.Distinct().OrderBy(value => value).ToArray();
+        }
+
+        private Cell[] GetCells(byte[] indices)
+        {
+            Cell[] result = new Cell[indices.Length];
+            for (int i = 0; i < indices.Length; i++)
+            {
+                result[i] = (Cells[indices[i]]);
+            }
+            return result.ToArray();
         }
 
         private void AddSuggestion(byte index, params byte[] values)
@@ -74,12 +91,74 @@
             return copy;
         }
 
-        public string GetCellValue(byte i, byte j)
+        public string GetCellValueSymbol(byte i, byte j)
         {
             byte value = Cells[i * 9 + j].Value;
             if (value == 0)
                 return "_";
             return value.ToString();
+        }
+
+        public void FillOnlyPossible()
+        {
+            bool updated;
+            do
+            {
+                updated = false;
+                updated |= FillOnlyPossibleInColumns();
+                updated |= FillOnlyPossibleInRows();
+                updated |= FillOnlyPossibleInSquares();
+            }
+            while (updated);
+        }
+
+        private bool FillOnlyPossibleInColumns()
+        {
+            bool updated = false;
+            for (byte i = 0; i < 9; i++)
+            {
+                byte[] columnIndices = Indices.GetColumnIndices(i);
+                updated |= FillOnlyPossible(columnIndices);
+            }
+            return updated;
+        }
+
+        private bool FillOnlyPossibleInRows()
+        {
+            bool updated = false;
+            for (byte i = 0; i < 9; i++)
+            {
+                byte[] rowIndices = Indices.GetRowIndices(i);
+                updated |= FillOnlyPossible(rowIndices);
+            }
+            return updated;
+        }
+
+        private bool FillOnlyPossibleInSquares()
+        {
+            bool updated = false;
+            for (byte i = 0; i < 9; i++)
+            {
+                byte[] squareIndices = Indices.GetSquareIndices(i);
+                updated |= FillOnlyPossible(squareIndices);
+            }
+            return updated;
+        }
+
+        private bool FillOnlyPossible(byte[] columnIndices)
+        {
+            bool updated = false;
+            var cells = GetCells(columnIndices);
+            for (byte suggestion = 1; suggestion < 10; suggestion++)
+            {
+                List<byte> cellIndices = cells.Where(cell => !cell.Answered && cell.GetSuggestions().Contains(suggestion)).Select(cell => cell.Coordinates.Index).ToList();
+                if (cellIndices.Count == 1)
+                {
+                    Cells[cellIndices[0]].Value = suggestion; // two fives at square 0 (indices 2 and 20)
+                    updated = true;
+                }
+            }
+            return updated;
         }
     }
 }

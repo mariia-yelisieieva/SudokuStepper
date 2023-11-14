@@ -19,6 +19,9 @@ PrintGrid("initial grid", game.InitialStep);
 game.FillSingleSuggestionCells();
 PrintGrid("filled single suggestion cells", game.Step1);
 
+game.FillOnlyPossibleInGroup();
+PrintGrid("filled only possible in a group", game.Step2);
+
 Console.ReadLine();
 
 
@@ -31,7 +34,7 @@ void PrintGrid(string name, Grid grid)
     {
         for (byte j = 0; j < 9; j++)
         {
-            Console.Write(grid.GetCellValue(i, j) + " ");
+            Console.Write(grid.GetCellValueSymbol(i, j) + " ");
             if (j % 3 == 2)
                 Console.Write("   ");
         }

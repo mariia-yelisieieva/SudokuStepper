@@ -16,5 +16,12 @@ namespace SudokuStepper
             Step1 = InitialStep.Copy();
             Step1.FillSingleSuggestionCells();
         }
+
+        public Grid Step2;
+        public void FillOnlyPossibleInGroup()
+        {
+            Step2 = Step1.Copy();
+            Step2.FillOnlyPossible();
+        }
     }
 }
