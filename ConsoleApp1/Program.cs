@@ -47,55 +47,50 @@ void PrintGridWithSuggestions(string name, Grid? grid, Grid? previousGrid = null
         return;
     Console.WriteLine(name);
 
-    StringBuilder values = new();
-    StringBuilder suggestions1 = new();
-    StringBuilder suggestions2 = new();
-    StringBuilder suggestions3 = new();
+    StringBuilder row1 = new();
+    StringBuilder row2 = new();
+    StringBuilder row3 = new();
 
     for (byte i = 0; i < 9; i++)
     {
         for (byte j = 0; j < 9; j++)
         {
             string value = grid.GetCellValueSymbol(i, j);
-            values.Append(value.PadRight(9));
-
-            if (value == "_")
+            if (value != "_")
             {
-                string[] suggestions = grid.GetCellSuggestionsSymbols(i, j);
-                suggestions1.Append($"{suggestions[0]} {suggestions[1]} {suggestions[2]}    ");
-                suggestions2.Append($"{suggestions[3]} {suggestions[4]} {suggestions[5]}    ");
-                suggestions3.Append($"{suggestions[6]} {suggestions[7]} {suggestions[8]}    ");
+                row1.Append(string.Empty.PadLeft(9));
+                row2.Append(value.PadLeft(3).PadRight(9));
+                row3.Append(string.Empty.PadLeft(9));
             }
             else
             {
-                suggestions1.Append(string.Empty.PadLeft(9));
-                suggestions2.Append(string.Empty.PadLeft(9));
-                suggestions3.Append(string.Empty.PadLeft(9));
+                string[] suggestions = grid.GetCellSuggestionsSymbols(i, j);
+                row1.Append($"{suggestions[0]} {suggestions[1]} {suggestions[2]}    ");
+                row2.Append($"{suggestions[3]} {suggestions[4]} {suggestions[5]}    ");
+                row3.Append($"{suggestions[6]} {suggestions[7]} {suggestions[8]}    ");
             }
-
             if (j % 3 == 2)
             {
-                values.Append("    ");
-                suggestions1.Append("    ");
-                suggestions2.Append("    ");
-                suggestions3.Append("    ");
+                row1.Append("    ");
+                row2.Append("    ");
+                row3.Append("    ");
             }
         }
 
-        Console.WriteLine(values);
-        values.Clear();
-
         Console.ForegroundColor = ConsoleColor.DarkGray;
-        Console.WriteLine(suggestions1);
-        suggestions1.Clear();
-        Console.WriteLine(suggestions2);
-        suggestions2.Clear();
-        Console.WriteLine(suggestions3);
-        suggestions3.Clear();
+        Console.WriteLine(row1);
+        row1.Clear();
+        Console.WriteLine(row2);
+        row2.Clear();
+        Console.WriteLine(row3);
+        row3.Clear();
         Console.ForegroundColor = ConsoleColor.Gray;
 
         if (i % 3 == 2)
+        {
             Console.WriteLine();
+            Console.WriteLine();
+        }
     }
 }
 
