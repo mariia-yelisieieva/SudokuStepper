@@ -72,13 +72,17 @@
                 Cells[index].RemoveSuggestion(value);
         }
 
-        public void FillSingleSuggestionCells()
+        public bool FillSingleSuggestionCells()
         {
+            bool updated = false;
             foreach (Cell cell in Cells)
             {
-                if (cell.GetSuggestions().Count(x => x != 0) == 1)
-                    cell.Value = cell.GetSuggestions().SingleOrDefault(x => x != 0);
+                if (cell.GetSuggestions().Count(x => x != 0) != 1)
+                    continue;
+                cell.Value = cell.GetSuggestions().SingleOrDefault(x => x != 0);
+                updated = true;
             }
+            return updated;
         }
 
         public Grid Copy()
@@ -95,17 +99,13 @@
             return value.ToString();
         }
 
-        public void FillOnlyPossible()
+        public bool FillOnlyPossible()
         {
-            bool updated;
-            do
-            {
-                updated = false;
-                updated |= FillOnlyPossibleInColumns();
-                updated |= FillOnlyPossibleInRows();
-                updated |= FillOnlyPossibleInSquares();
-            }
-            while (updated);
+            bool updated = false;
+            updated |= FillOnlyPossibleInColumns();
+            updated |= FillOnlyPossibleInRows();
+            updated |= FillOnlyPossibleInSquares();
+            return updated;
         }
 
         private bool FillOnlyPossibleInColumns()

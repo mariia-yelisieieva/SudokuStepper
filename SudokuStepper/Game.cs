@@ -14,14 +14,29 @@ namespace SudokuStepper
         public void FillSingleSuggestionCells()
         {
             Step1 = InitialStep.Copy();
-            Step1.FillSingleSuggestionCells();
+
+            bool updated;
+            do
+            {
+                updated = false;
+                updated |= Step1.FillSingleSuggestionCells();
+            }
+            while (updated);
         }
 
         public Grid Step2;
         public void FillOnlyPossibleInGroup()
         {
             Step2 = Step1.Copy();
-            Step2.FillOnlyPossible();
+
+            bool updated;
+            do
+            {
+                updated = false;
+                updated |= Step2.FillSingleSuggestionCells();
+                updated |= Step2.FillOnlyPossible();
+            }
+            while (updated);
         }
     }
 }
