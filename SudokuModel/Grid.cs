@@ -101,6 +101,21 @@
             return value.ToString();
         }
 
+        public string[] GetCellSuggestionsSymbols(byte i, byte j)
+        {
+            List<string> result = new();
+            byte[] suggestions = Cells[i * 9 + j].GetSuggestions();
+            for (int index = 0; index < 9; index++)
+            {
+                bool hasSuggestion = suggestions.Any(x => x == index + 1);
+                if (hasSuggestion)
+                    result.Add((index + 1).ToString());
+                else
+                    result.Add("_");
+            }
+            return result.ToArray();
+        }
+
         public bool FillOnlyPossible()
         {
             bool updated = false;
