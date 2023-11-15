@@ -1,4 +1,6 @@
-﻿namespace SudokuModel
+﻿using System.ComponentModel;
+
+namespace SudokuModel
 {
     internal class Cell
     {
@@ -11,7 +13,19 @@
         }
 
         public bool Answered => Value != 0;
-        public byte Value { get; set; } = 0;
+
+        private byte value;
+        public byte Value
+        {
+            get => value;
+            set
+            {
+                this.value = value;
+                ValueUpdated?.Invoke(this, this);
+            }
+        }
+
+        public event EventHandler<Cell> ValueUpdated;
 
         private readonly byte[] suggestions = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         public byte[] GetSuggestions()

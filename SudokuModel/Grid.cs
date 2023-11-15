@@ -1,6 +1,6 @@
 ﻿namespace SudokuModel
 {
-    public class Grid
+    public class Grid : IDisposable
     {
         internal readonly Cell[] Cells = new Cell[81];
         public Grid(params byte[] cellValues)
@@ -9,8 +9,11 @@
                 throw new ArgumentException();
 
             for (byte i = 0; i < 81; i++)
+            {
                 Cells[i] = new Cell(i);
-            
+                Cells[i].ValueUpdated += Grid_CellValueUpdated;
+            }
+
             for (int i = 0; i < cellValues.Length; i++)
             {
                 if (cellValues[i] == 0)
@@ -20,16 +23,9 @@
             RefreshSuggestions();
         }
 
-        public void Answer(byte x, byte y, byte value)
+        private void Grid_CellValueUpdated(object? sender, Cell cell)
         {
-            if (x < 0 || x > 8)
-                throw new ArgumentException($"{x} coordinate is not supported");
-            if (y < 0 || y > 8)
-                throw new ArgumentException($"{y} coordinate is not supported");
-            if (value < 1 || value > 9)
-                throw new ArgumentException($"{value} value is not supported");
-
-            Cells[y * 9 + x].Value = value;
+            RefreshSuggestions();
         }
 
         private void RefreshSuggestions()
@@ -59,7 +55,7 @@
             Cell[] result = new Cell[indices.Length];
             for (int i = 0; i < indices.Length; i++)
             {
-                result[i] = (Cells[indices[i]]);
+                result[i] = Cells[indices[i]];
             }
             return result.ToArray();
         }
@@ -154,11 +150,17 @@
                 List<byte> cellIndices = cells.Where(cell => !cell.Answered && cell.GetSuggestions().Contains(suggestion)).Select(cell => cell.Coordinates.Index).ToList();
                 if (cellIndices.Count == 1)
                 {
-                    Cells[cellIndices[0]].Value = suggestion; // two fives at square 0 (indices 2 and 20)
+                    Cells[cellIndices[0]].Value = suggestion;
                     updated = true;
                 }
             }
             return updated;
+        }
+
+        void IDisposable.Dispose()
+        {
+            foreach (Cell cell in Cells)
+                cell.ValueUpdated -= Grid_CellValueUpdated;
         }
     }
 }
