@@ -1,8 +1,7 @@
 ﻿using SudokuModel;
 using SudokuStepper;
 
-var game = new Game();
-game.Initialize(new byte[]
+byte[] task1 = new byte[]
 {
     0, 1, 0, 0, 6, 0, 0, 0, 4,
     0, 0, 4, 0, 1, 5, 0, 6, 0,
@@ -13,28 +12,50 @@ game.Initialize(new byte[]
     0, 0, 0, 0, 0, 0, 0, 3, 1,
     9, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 8, 0, 0, 0, 0, 4, 0
-});
-PrintGrid("initial grid", game.InitialStep);
+}; // full solution
 
-game.FillSingleSuggestionCells();
-PrintGrid("filled single suggestion cells", game.Step1);
+byte[] task2 = new byte[]
+{
+    2, 0, 0, 0, 0, 0, 0, 0, 1,
+    0, 0, 0, 9, 0, 6, 0, 0, 0,
+    0, 0, 0, 8, 0, 1, 7, 2, 0,
+    9, 0, 0, 3, 0, 0, 0, 0, 0,
+    0, 0, 8, 0, 0, 0, 2, 0, 4,
+    0, 0, 0, 0, 0, 0, 0, 1, 2,
+    1, 0, 3, 0, 0, 5, 0, 0, 9,
+    0, 0, 0, 7, 0, 0, 0, 0, 0,
+    0, 4, 6, 2, 0, 0, 0, 0, 0
+}; // partial solution
 
-game.FillOnlyPossibleInGroup();
-PrintGrid("filled only possible in a group", game.Step2);
+var game = new Game();
+game.Initialize(task1);
+PrintGrid("Initial task", game.InitialStep);
+
+game.FindAnswer();
+PrintGrid("Step 1", game.Steps.FirstOrDefault(), game.InitialStep);
+for (int i = 1; i < game.Steps.Count; i++)
+    PrintGrid("Step " + (i + 1), game.Steps[i], game.Steps[i - 1]);
 
 Console.ReadLine();
 
 
 
 
-void PrintGrid(string name, Grid grid)
+void PrintGrid(string name, Grid? grid, Grid? previousGrid = null)
 {
+    if (grid == null)
+        return;
     Console.WriteLine(name);
     for (byte i = 0; i < 9; i++)
     {
         for (byte j = 0; j < 9; j++)
         {
-            Console.Write(grid.GetCellValueSymbol(i, j) + " ");
+            string currentSymbol = grid.GetCellValueSymbol(i, j);
+            if (previousGrid != null && previousGrid.GetCellValueSymbol(i, j) != currentSymbol)
+                Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(currentSymbol + " ");
+            if (previousGrid != null)
+                Console.ForegroundColor = ConsoleColor.Gray;
             if (j % 3 == 2)
                 Console.Write("   ");
         }

@@ -23,6 +23,8 @@
             RefreshSuggestions();
         }
 
+        public bool IsAllAnswered => !Cells.Any(cell => !cell.Answered);
+
         private void Grid_CellValueUpdated(object? sender, Cell cell)
         {
             RefreshSuggestions();
@@ -148,7 +150,7 @@
             for (byte suggestion = 1; suggestion < 10; suggestion++)
             {
                 List<byte> cellIndices = cells.Where(cell => !cell.Answered && cell.GetSuggestions().Contains(suggestion)).Select(cell => cell.Coordinates.Index).ToList();
-                if (cellIndices.Count == 1)
+                if (cellIndices.Count == 1 && !Cells[cellIndices[0]].Answered && Cells[cellIndices[0]].Value != suggestion)
                 {
                     Cells[cellIndices[0]].Value = suggestion;
                     updated = true;
