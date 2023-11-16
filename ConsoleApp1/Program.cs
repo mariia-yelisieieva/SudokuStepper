@@ -1,6 +1,5 @@
 ﻿using SudokuModel;
 using SudokuStepper;
-using System.Text;
 
 byte[] task1 = new byte[]
 {
@@ -75,21 +74,16 @@ void PrintGridWithSuggestions(string name, Grid? grid, Grid? previousGrid = null
                 else
                 {
                     int index = suggRow * 3 + 0;
-                    bool changed = previousGrid != null && previousSuggestions[index] != suggestions[index];
-                    Console.ForegroundColor = changed ? ConsoleColor.Red : ConsoleColor.DarkGray;
-                    Console.Write(changed ? "x" : suggestions[index]);
+                    bool changed;
+                    PrintSuggestion(previousGrid, suggestions, previousSuggestions, index);
                     Console.Write(" ");
 
                     index = suggRow * 3 + 1;
-                    changed = previousGrid != null && previousSuggestions[index] != suggestions[index];
-                    Console.ForegroundColor = changed ? ConsoleColor.Red : ConsoleColor.DarkGray;
-                    Console.Write(changed ? "x" : suggestions[index]);
+                    PrintSuggestion(previousGrid, suggestions, previousSuggestions, index);
                     Console.Write(" ");
 
                     index = suggRow * 3 + 2;
-                    changed = previousGrid != null && previousSuggestions[index] != suggestions[index];
-                    Console.ForegroundColor = changed ? ConsoleColor.Red : ConsoleColor.DarkGray;
-                    Console.Write(changed ? "x" : suggestions[index]);
+                    PrintSuggestion(previousGrid, suggestions, previousSuggestions, index);
                     Console.Write("    ");
                 }
 
@@ -133,4 +127,27 @@ void PrintGrid(string name, Grid? grid, Grid? previousGrid = null)
             Console.WriteLine();
     }
     Console.WriteLine();
+}
+
+void PrintSuggestion(Grid? previousGrid, string[] suggestions, string[] previousSuggestions, int index)
+{
+    bool changed = previousGrid != null && previousSuggestions[index] != suggestions[index];
+    if (changed)
+    {
+        if (previousSuggestions[index] != "_")
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write("x");
+        }
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.Write(suggestions[index]);
+        }
+    }
+    else
+    {
+        Console.ForegroundColor = ConsoleColor.DarkGray;
+        Console.Write(suggestions[index]);
+    }
 }
