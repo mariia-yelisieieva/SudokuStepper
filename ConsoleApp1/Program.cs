@@ -40,51 +40,67 @@ for (int i = 1; i < game.Steps.Count; i++)
 Console.ReadLine();
 
 
-
 void PrintGridWithSuggestions(string name, Grid? grid, Grid? previousGrid = null)
 {
     if (grid == null)
         return;
-    Console.WriteLine(name);
-
-    StringBuilder row1 = new();
-    StringBuilder row2 = new();
-    StringBuilder row3 = new();
+    Console.ForegroundColor = ConsoleColor.Gray;
+    Console.WriteLine();
+    Console.WriteLine($"~~~~~~~~~~~~~~~~~~~~~~~~~~ {name} ~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    Console.WriteLine();
 
     for (byte i = 0; i < 9; i++)
     {
-        for (byte j = 0; j < 9; j++)
+        for (byte suggRow = 0; suggRow < 3; suggRow++)
         {
-            string value = grid.GetCellValueSymbol(i, j);
-            if (value != "_")
+            for (byte j = 0; j < 9; j++)
             {
-                row1.Append(string.Empty.PadLeft(9));
-                row2.Append(value.PadLeft(3).PadRight(9));
-                row3.Append(string.Empty.PadLeft(9));
-            }
-            else
-            {
+                string answer = grid.GetCellValueSymbol(i, j);
                 string[] suggestions = grid.GetCellSuggestionsSymbols(i, j);
-                row1.Append($"{suggestions[0]} {suggestions[1]} {suggestions[2]}    ");
-                row2.Append($"{suggestions[3]} {suggestions[4]} {suggestions[5]}    ");
-                row3.Append($"{suggestions[6]} {suggestions[7]} {suggestions[8]}    ");
-            }
-            if (j % 3 == 2)
-            {
-                row1.Append("    ");
-                row2.Append("    ");
-                row3.Append("    ");
-            }
-        }
+                string[] previousSuggestions = previousGrid?.GetCellSuggestionsSymbols(i, j);
 
-        Console.ForegroundColor = ConsoleColor.DarkGray;
-        Console.WriteLine(row1);
-        row1.Clear();
-        Console.WriteLine(row2);
-        row2.Clear();
-        Console.WriteLine(row3);
-        row3.Clear();
-        Console.ForegroundColor = ConsoleColor.Gray;
+                if (answer != "_")
+                {
+                    if (suggRow == 1)
+                    {
+                        bool changed = previousGrid != null && previousGrid.GetCellValueSymbol(i, j) != answer;
+                        Console.ForegroundColor = changed ? ConsoleColor.Green : ConsoleColor.White;
+                        Console.Write(answer.PadLeft(3).PadRight(9));
+                    }
+                    else
+                    {
+                        Console.Write(string.Empty.PadLeft(9));
+                    }
+                }
+                else
+                {
+                    int index = suggRow * 3 + 0;
+                    bool changed = previousGrid != null && previousSuggestions[index] != suggestions[index];
+                    Console.ForegroundColor = changed ? ConsoleColor.Red : ConsoleColor.DarkGray;
+                    Console.Write(changed ? "x" : suggestions[index]);
+                    Console.Write(" ");
+
+                    index = suggRow * 3 + 1;
+                    changed = previousGrid != null && previousSuggestions[index] != suggestions[index];
+                    Console.ForegroundColor = changed ? ConsoleColor.Red : ConsoleColor.DarkGray;
+                    Console.Write(changed ? "x" : suggestions[index]);
+                    Console.Write(" ");
+
+                    index = suggRow * 3 + 2;
+                    changed = previousGrid != null && previousSuggestions[index] != suggestions[index];
+                    Console.ForegroundColor = changed ? ConsoleColor.Red : ConsoleColor.DarkGray;
+                    Console.Write(changed ? "x" : suggestions[index]);
+                    Console.Write("    ");
+                }
+
+                if (j % 3 == 2)
+                {
+                    Console.Write("    ");
+                }
+            }
+            Console.WriteLine();
+        }
+        Console.WriteLine();
 
         if (i % 3 == 2)
         {

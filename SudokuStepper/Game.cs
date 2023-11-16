@@ -13,7 +13,7 @@ namespace SudokuStepper
         public List<Grid> Steps = new List<Grid>();
         public void FindAnswer()
         {
-            Grid currentStep = InitialStep;
+            Grid currentStep = InitialStep.Copy();
             Grid newStep;
             bool updated;
             do
