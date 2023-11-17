@@ -10,34 +10,38 @@ namespace SudokuStepper
             InitialStep = new Grid(values);
         }
 
-        public List<Grid> Steps = new List<Grid>();
+        public List<Grid> Steps = new();
         public void FindAnswer()
         {
             Grid currentStep = InitialStep.Copy();
-            Grid newStep;
             bool updated;
+
+            currentStep.RemoveAnsweredSuggestions();
+            Step(currentStep);
             do
             {
                 updated = false;
                 updated |= currentStep.FillSingleSuggestionCells();
                 if (updated)
-                {
-                    newStep = currentStep.Copy();
-                    currentStep = newStep;
-                    Steps.Add(newStep);
-                }
+                    Step(currentStep);
                 else
                 {
                     updated |= currentStep.FillOnlyPossible();
                     if (updated)
-                    {
-                        newStep = currentStep.Copy();
-                        currentStep = newStep;
-                        Steps.Add(newStep);
-                    }
+                        Step(currentStep);
                 }
             }
             while (updated);
+
+            InitialStep.Dispose();
+            foreach (var grid in Steps)
+                grid.Dispose();
+        }
+
+        private void Step(Grid currentStep)
+        {
+            Grid newStep = currentStep.Copy();
+            Steps.Add(newStep);
         }
     }
 }

@@ -5,11 +5,14 @@ namespace SudokuModel
     internal class Cell
     {
         public Coordinates Coordinates { get; }
-        public Cell(byte index)
+        public Cell(byte index, byte value)
         {
             if (index < 0 || index > 81)
                 throw new ArgumentException($"{index} cell index is not supported");
+            if (value < 0 || value > 9)
+                throw new ArgumentException($"{value} value index is not supported");
             Coordinates = new Coordinates(index);
+            Value = value;
         }
 
         public bool Answered => Value != 0;
@@ -27,7 +30,7 @@ namespace SudokuModel
 
         public event EventHandler<Cell> ValueUpdated;
 
-        private readonly byte[] suggestions = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        private readonly byte[] suggestions = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         public byte[] GetSuggestions()
         {
             if (Answered)
@@ -52,10 +55,8 @@ namespace SudokuModel
 
         public Cell Copy()
         {
-            var copy = new Cell(Coordinates.Index)
-            {
-                Value = Value
-            };
+            var copy = new Cell(Coordinates.Index, Value);
+            Array.ForEach(suggestions, s => { if (s != 0) copy.AddSuggestion(s); });
             return copy;
         }
     }

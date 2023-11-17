@@ -8,33 +8,36 @@
             if (cellValues.Length != 81)
                 throw new ArgumentException();
 
-            for (byte i = 0; i < 81; i++)
+            for (byte i = 0; i < cellValues.Length; i++)
             {
-                Cells[i] = new Cell(i);
+                Cells[i] = new Cell(i, cellValues[i]);
                 Cells[i].ValueUpdated += Grid_CellValueUpdated;
             }
+        }
 
-            for (int i = 0; i < cellValues.Length; i++)
-            {
-                if (cellValues[i] == 0)
-                    continue;
-                Cells[i].Value = cellValues[i];
-            }
-            RefreshSuggestions();
+        private Grid(Cell[] cells)
+        {
+            Cells = cells;
+
+            for (byte i = 0; i < cells.Length; i++)
+                Cells[i].ValueUpdated += Grid_CellValueUpdated;
         }
 
         public bool IsAllAnswered => !Cells.Any(cell => !cell.Answered);
 
         private void Grid_CellValueUpdated(object? sender, Cell cell)
         {
-            RefreshSuggestions();
+            RemoveAnsweredSuggestions(cell.Coordinates.AdjacentIndices);
         }
 
-        private void RefreshSuggestions()
+        public void RemoveAnsweredSuggestions(byte[] indices = null)
         {
-            for (byte i = 0; i < Cells.Length; i++)
+            indices ??= Enumerable.Range(0, 81).Select(i => (byte)i).ToArray();
+
+            for (byte index = 0; index < indices.Length; index++)
             {
-                AddSuggestion(i, new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9});
+                byte i = indices[index];
+                AddSuggestion(i, new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
                 byte[] adjacentValues = GetCellValues(Cells[i].Coordinates.AdjacentIndices);
                 RemoveSuggestion(i, adjacentValues);
             }
@@ -89,7 +92,7 @@
 
         public Grid Copy()
         {
-            var copy = new Grid(Cells.Select(c => c.Value).ToArray());
+            var copy = new Grid(Cells.Select(c => c.Copy()).ToArray());
             return copy;
         }
 
@@ -174,7 +177,7 @@
             return updated;
         }
 
-        void IDisposable.Dispose()
+        public void Dispose()
         {
             foreach (Cell cell in Cells)
                 cell.ValueUpdated -= Grid_CellValueUpdated;
