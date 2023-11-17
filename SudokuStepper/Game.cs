@@ -28,7 +28,13 @@ namespace SudokuStepper
                 {
                     updated |= currentStep.FillOnlyPossible();
                     if (updated)
-                        Step(currentStep);
+                        Step(currentStep, print);
+                    else
+                    {
+                        updated |= currentStep.RemoveSuggestionsForOnlyPossible(3);
+                        if (updated)
+                            Step(currentStep, print);
+                    }
                 }
             }
             while (updated);

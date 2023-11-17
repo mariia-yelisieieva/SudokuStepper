@@ -177,6 +177,44 @@
             return updated;
         }
 
+        public bool RemoveSuggestionsForOnlyPossible(byte numberOfPossibleValues)
+        {
+            bool changed = false;
+            Cell[] selectedPossibleValues = Cells.Where(cell => cell.GetSuggestions().Length == numberOfPossibleValues).ToArray();
+            foreach (Cell cell in selectedPossibleValues)
+            {
+                byte[] suggestions = cell.GetSuggestions();
+
+                Cell[] vertical = GetCells(cell.Coordinates.AdjacentColumnIndices);
+                changed |= RemoveSuggestionsForOnlyPossible(numberOfPossibleValues, suggestions, vertical);
+
+                Cell[] horizontal = GetCells(cell.Coordinates.AdjacentRowIndices);
+                changed |= RemoveSuggestionsForOnlyPossible(numberOfPossibleValues, suggestions, horizontal);
+
+                Cell[] square = GetCells(cell.Coordinates.AdjacentSquareIndices);
+                changed |= RemoveSuggestionsForOnlyPossible(numberOfPossibleValues, suggestions, square);
+            }
+            return changed;
+        }
+
+        private bool RemoveSuggestionsForOnlyPossible(byte numberOfPossibleValues, byte[] suggestions, Cell[] group)
+        {
+            bool changed = false;
+            Cell[] onlyPossibleCells = group.Where(cell => !cell.Answered && !cell.GetSuggestions().Except(suggestions).Any()).ToArray();
+            if (onlyPossibleCells.Length == numberOfPossibleValues - 1)
+            {
+                foreach (Cell groupCell in group)
+                {
+                    if (groupCell.GetSuggestions().Except(suggestions).Any())
+                    {
+                        changed = true;
+                        RemoveSuggestion(groupCell.Coordinates.Index, suggestions);
+                    }
+                }
+            }
+            return changed;
+        }
+
         public void Dispose()
         {
             foreach (Cell cell in Cells)

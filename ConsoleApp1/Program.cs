@@ -108,7 +108,10 @@ void PrintGrid(string name, Grid? grid, Grid? previousGrid = null)
 {
     if (grid == null)
         return;
-    Console.WriteLine(name);
+    Console.ForegroundColor = ConsoleColor.Gray;
+    Console.WriteLine();
+    Console.WriteLine($"~~~~~~ {name} ~~~~~~");
+    Console.WriteLine();
     for (byte i = 0; i < 9; i++)
     {
         for (byte j = 0; j < 9; j++)
