@@ -30,14 +30,20 @@
             RemoveAnsweredSuggestions(cell.Coordinates.AdjacentIndices);
         }
 
-        public void RemoveAnsweredSuggestions(byte[] indices = null)
+        public void RemoveAnsweredSuggestions()
         {
-            indices ??= Enumerable.Range(0, 81).Select(i => (byte)i).ToArray();
+            byte[] indices = Enumerable.Range(0, 81).Select(i => (byte)i).ToArray();
 
+            for (byte index = 0; index < indices.Length; index++)
+                AddSuggestion(indices[index], new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+            RemoveAnsweredSuggestions(indices);
+        }
+
+        private void RemoveAnsweredSuggestions(byte[] indices = null)
+        {
             for (byte index = 0; index < indices.Length; index++)
             {
                 byte i = indices[index];
-                AddSuggestion(i, new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
                 byte[] adjacentValues = GetCellValues(Cells[i].Coordinates.AdjacentIndices);
                 RemoveSuggestion(i, adjacentValues);
             }
@@ -185,19 +191,19 @@
             {
                 byte[] suggestions = cell.GetSuggestions();
 
-                Cell[] vertical = GetCells(cell.Coordinates.AdjacentColumnIndices);
-                changed |= RemoveSuggestionsForOnlyPossible(numberOfPossibleValues, suggestions, vertical);
+                Cell[] vertical = GetCells(cell.Coordinates.AdjacentColumnIndices).Where(c => !c.Answered).ToArray();
+                changed |= RemoveSuggestionsForOnlyPossible(numberOfPossibleValues, suggestions, vertical, cell);
 
-                Cell[] horizontal = GetCells(cell.Coordinates.AdjacentRowIndices);
-                changed |= RemoveSuggestionsForOnlyPossible(numberOfPossibleValues, suggestions, horizontal);
+                Cell[] horizontal = GetCells(cell.Coordinates.AdjacentRowIndices).Where(c => !c.Answered).ToArray();
+                changed |= RemoveSuggestionsForOnlyPossible(numberOfPossibleValues, suggestions, horizontal, cell);
 
-                Cell[] square = GetCells(cell.Coordinates.AdjacentSquareIndices);
-                changed |= RemoveSuggestionsForOnlyPossible(numberOfPossibleValues, suggestions, square);
+                Cell[] square = GetCells(cell.Coordinates.AdjacentSquareIndices).Where(c => !c.Answered).ToArray();
+                changed |= RemoveSuggestionsForOnlyPossible(numberOfPossibleValues, suggestions, square, cell);
             }
             return changed;
         }
 
-        private bool RemoveSuggestionsForOnlyPossible(byte numberOfPossibleValues, byte[] suggestions, Cell[] group)
+        private bool RemoveSuggestionsForOnlyPossible(byte numberOfPossibleValues, byte[] suggestions, Cell[] group, Cell current)
         {
             bool changed = false;
             Cell[] onlyPossibleCells = group.Where(cell => !cell.Answered && !cell.GetSuggestions().Except(suggestions).Any()).ToArray();
@@ -205,7 +211,8 @@
             {
                 foreach (Cell groupCell in group)
                 {
-                    if (groupCell.GetSuggestions().Except(suggestions).Any())
+                    var groupCellSuggestions = groupCell.GetSuggestions();
+                    if (groupCellSuggestions.Intersect(suggestions).Any() && groupCellSuggestions.Except(suggestions).Any())
                     {
                         changed = true;
                         RemoveSuggestion(groupCell.Coordinates.Index, suggestions);

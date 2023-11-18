@@ -59,5 +59,7 @@ namespace SudokuModel
             Array.ForEach(suggestions, s => { if (s != 0) copy.AddSuggestion(s); });
             return copy;
         }
+
+        public override string ToString() => $"{Coordinates.X}, {Coordinates.Y}";
     }
 }

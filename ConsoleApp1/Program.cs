@@ -21,20 +21,22 @@ byte[] task2 = new byte[]
     0, 0, 0, 8, 0, 1, 7, 2, 0,
     9, 0, 0, 3, 0, 0, 0, 0, 0,
     0, 0, 8, 0, 0, 0, 2, 0, 4,
-    0, 0, 0, 0, 0, 0, 0, 1, 2,
+    0, 0, 0, 0, 0, 0, 0, 1, 3,
     1, 0, 3, 0, 0, 5, 0, 0, 9,
     0, 0, 0, 7, 0, 0, 0, 0, 0,
     0, 4, 6, 2, 0, 0, 0, 0, 0
 }; // partial solution
 
 var game = new Game();
-game.Initialize(task1);
+game.Initialize(task2);
 PrintGrid("Initial task", game.InitialStep);
 
-game.FindAnswer();
-PrintGridWithSuggestions("Step 1", game.Steps.FirstOrDefault(), game.InitialStep);
-for (int i = 1; i < game.Steps.Count; i++)
-    PrintGridWithSuggestions("Step " + (i + 1), game.Steps[i], game.Steps[i - 1]);
+game.FindAnswer((name, grid, grid1) => PrintGridWithSuggestions(name, grid, grid1));
+//PrintGridWithSuggestions("Step 1", game.Steps.FirstOrDefault(), game.InitialStep);
+//for (int i = 1; i < game.Steps.Count; i++)
+//    PrintGridWithSuggestions("Step " + (i + 1), game.Steps[i], game.Steps[i - 1]);
+
+PrintGrid("Result", game.Steps.Last());
 
 Console.ReadLine();
 
