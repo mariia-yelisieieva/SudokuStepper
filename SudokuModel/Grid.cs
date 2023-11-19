@@ -2,7 +2,7 @@
 {
     public class Grid : IDisposable
     {
-        internal readonly Cell[] Cells = new Cell[81];
+        public Cell[] Cells { get; } = new Cell[81];
         public Grid(params byte[] cellValues)
         {
             if (cellValues.Length != 81)
@@ -61,7 +61,7 @@
             return result.Distinct().OrderBy(value => value).ToArray();
         }
 
-        private Cell[] GetCells(byte[] indices)
+        public Cell[] GetCells(byte[] indices)
         {
             Cell[] result = new Cell[indices.Length];
             for (int i = 0; i < indices.Length; i++)
@@ -71,29 +71,16 @@
             return result.ToArray();
         }
 
-        private void AddSuggestion(byte index, params byte[] values)
+        public void AddSuggestion(byte index, params byte[] values)
         {
             foreach (byte value in values)
                 Cells[index].AddSuggestion(value);
         }
 
-        private void RemoveSuggestion(byte index, params byte[] values)
+        public void RemoveSuggestion(byte index, params byte[] values)
         {
             foreach (byte value in values)
                 Cells[index].RemoveSuggestion(value);
-        }
-
-        public bool FillSingleSuggestionCells()
-        {
-            bool updated = false;
-            foreach (Cell cell in Cells)
-            {
-                if (cell.GetSuggestions().Count(x => x != 0) != 1)
-                    continue;
-                cell.Value = cell.GetSuggestions().SingleOrDefault(x => x != 0);
-                updated = true;
-            }
-            return updated;
         }
 
         public Grid Copy()
@@ -123,103 +110,6 @@
                     result.Add("_");
             }
             return result.ToArray();
-        }
-
-        public bool FillOnlyPossible()
-        {
-            bool updated = false;
-            updated |= FillOnlyPossibleInColumns();
-            updated |= FillOnlyPossibleInRows();
-            updated |= FillOnlyPossibleInSquares();
-            return updated;
-        }
-
-        private bool FillOnlyPossibleInColumns()
-        {
-            bool updated = false;
-            for (byte i = 0; i < 9; i++)
-            {
-                byte[] columnIndices = Indices.GetColumnIndices(i);
-                updated |= FillOnlyPossible(columnIndices);
-            }
-            return updated;
-        }
-
-        private bool FillOnlyPossibleInRows()
-        {
-            bool updated = false;
-            for (byte i = 0; i < 9; i++)
-            {
-                byte[] rowIndices = Indices.GetRowIndices(i);
-                updated |= FillOnlyPossible(rowIndices);
-            }
-            return updated;
-        }
-
-        private bool FillOnlyPossibleInSquares()
-        {
-            bool updated = false;
-            for (byte i = 0; i < 9; i++)
-            {
-                byte[] squareIndices = Indices.GetSquareIndices(i);
-                updated |= FillOnlyPossible(squareIndices);
-            }
-            return updated;
-        }
-
-        private bool FillOnlyPossible(byte[] columnIndices)
-        {
-            bool updated = false;
-            var cells = GetCells(columnIndices);
-            for (byte suggestion = 1; suggestion < 10; suggestion++)
-            {
-                List<byte> cellIndices = cells.Where(cell => !cell.Answered && cell.GetSuggestions().Contains(suggestion)).Select(cell => cell.Coordinates.Index).ToList();
-                if (cellIndices.Count == 1 && !Cells[cellIndices[0]].Answered && Cells[cellIndices[0]].Value != suggestion)
-                {
-                    Cells[cellIndices[0]].Value = suggestion;
-                    updated = true;
-                }
-            }
-            return updated;
-        }
-
-        public bool RemoveSuggestionsForOnlyPossible(byte numberOfPossibleValues)
-        {
-            bool changed = false;
-            Cell[] selectedPossibleValues = Cells.Where(cell => cell.GetSuggestions().Length == numberOfPossibleValues).ToArray();
-            foreach (Cell cell in selectedPossibleValues)
-            {
-                byte[] suggestions = cell.GetSuggestions();
-
-                Cell[] vertical = GetCells(cell.Coordinates.AdjacentColumnIndices).Where(c => !c.Answered).ToArray();
-                changed |= RemoveSuggestionsForOnlyPossible(numberOfPossibleValues, suggestions, vertical, cell);
-
-                Cell[] horizontal = GetCells(cell.Coordinates.AdjacentRowIndices).Where(c => !c.Answered).ToArray();
-                changed |= RemoveSuggestionsForOnlyPossible(numberOfPossibleValues, suggestions, horizontal, cell);
-
-                Cell[] square = GetCells(cell.Coordinates.AdjacentSquareIndices).Where(c => !c.Answered).ToArray();
-                changed |= RemoveSuggestionsForOnlyPossible(numberOfPossibleValues, suggestions, square, cell);
-            }
-            return changed;
-        }
-
-        private bool RemoveSuggestionsForOnlyPossible(byte numberOfPossibleValues, byte[] suggestions, Cell[] group, Cell current)
-        {
-            bool changed = false;
-            Cell[] onlyPossibleCells = group.Where(cell => !cell.Answered && !cell.GetSuggestions().Except(suggestions).Any()).ToArray();
-            if (onlyPossibleCells.Length == numberOfPossibleValues - 1)
-            {
-                foreach (Cell groupCell in group)
-                {
-                    var groupCellSuggestions = groupCell.GetSuggestions();
-                    if (groupCellSuggestions.Intersect(suggestions).Any() && groupCellSuggestions.Except(suggestions).Any())
-                    {
-                        changed = true;
-                        RemoveSuggestion(groupCell.Coordinates.Index, suggestions);
-                    }
-                }
-            }
-            return changed;
         }
 
         public void Dispose()

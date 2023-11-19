@@ -1,5 +1,6 @@
 ﻿using SudokuModel;
 using SudokuStepper;
+using SudokuStepper.Steps;
 
 byte[] task1 = new byte[]
 {
@@ -27,7 +28,14 @@ byte[] task2 = new byte[]
     0, 4, 6, 2, 0, 0, 0, 0, 0
 }; // partial solution
 
-var game = new Game();
+var game = new Game(new List<IStep>()
+{
+    new ObviousSingleStep(),
+    new LastPossibleStep(),
+    new ObviousCombinationOf2Step(),
+    new ObviousCombinationOf3Step(),
+    new ObviousCombinationOf4Step(),
+});
 game.Initialize(task2);
 PrintGrid("Initial task", game.InitialStep);
 
@@ -36,7 +44,7 @@ game.FindAnswer((name, grid, grid1) => PrintGridWithSuggestions(name, grid, grid
 //for (int i = 1; i < game.Steps.Count; i++)
 //    PrintGridWithSuggestions("Step " + (i + 1), game.Steps[i], game.Steps[i - 1]);
 
-PrintGrid("Result", game.Steps.Last());
+PrintGrid("Result", game.StepResults.Last());
 
 Console.ReadLine();
 
@@ -76,7 +84,6 @@ void PrintGridWithSuggestions(string name, Grid? grid, Grid? previousGrid = null
                 else
                 {
                     int index = suggRow * 3 + 0;
-                    bool changed;
                     PrintSuggestion(previousGrid, suggestions, previousSuggestions, index);
                     Console.Write(" ");
 

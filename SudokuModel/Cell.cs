@@ -1,8 +1,6 @@
-﻿using System.ComponentModel;
-
-namespace SudokuModel
+﻿namespace SudokuModel
 {
-    internal class Cell
+    public class Cell
     {
         public Coordinates Coordinates { get; }
         public Cell(byte index, byte value)
@@ -28,7 +26,7 @@ namespace SudokuModel
             }
         }
 
-        public event EventHandler<Cell> ValueUpdated;
+        internal event EventHandler<Cell> ValueUpdated;
 
         private readonly byte[] suggestions = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         public byte[] GetSuggestions()
@@ -40,20 +38,20 @@ namespace SudokuModel
             Array.Copy(realSuggestions, copy, realSuggestions.Length);
             return copy;
         }
-        public void AddSuggestion(byte suggestedNumber)
+        internal void AddSuggestion(byte suggestedNumber)
         {
             if (suggestedNumber < 1 || suggestedNumber > 9)
                 throw new ArgumentException($"suggested number is out of range, cell {Coordinates.X},{Coordinates.Y}");
             suggestions[suggestedNumber - 1] = suggestedNumber;
         }
-        public void RemoveSuggestion(byte suggestedNumber)
+        internal void RemoveSuggestion(byte suggestedNumber)
         {
             if (suggestedNumber < 1 || suggestedNumber > 9)
                 throw new ArgumentException($"suggested number is out of range, cell {Coordinates.X},{Coordinates.Y}");
             suggestions[suggestedNumber - 1] = 0;
         }
 
-        public Cell Copy()
+        internal Cell Copy()
         {
             var copy = new Cell(Coordinates.Index, Value);
             Array.ForEach(suggestions, s => { if (s != 0) copy.AddSuggestion(s); });
