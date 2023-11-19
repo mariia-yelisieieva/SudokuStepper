@@ -2,11 +2,11 @@
 
 namespace SudokuStepper.Steps
 {
-    public interface IStep
+    public interface IStepHandler
     {
         bool MakeChange(Grid grid);
 
-        string GetComment() => $"The step {Name} was not yet executed";
+        string GetComment();
 
         string Name { get; }
     }

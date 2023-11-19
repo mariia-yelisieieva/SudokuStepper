@@ -5,10 +5,10 @@ namespace SudokuStepper
 {
     public class Game
     {
-        private readonly IEnumerable<IStep> steps;
-        public Game(IEnumerable<IStep> steps)
+        private readonly IEnumerable<IStepHandler> stepHandlers;
+        public Game(IEnumerable<IStepHandler> stepHandlers)
         {
-            this.steps = steps;
+            this.stepHandlers = stepHandlers;
         }
 
         public Grid InitialStep;
@@ -17,40 +17,36 @@ namespace SudokuStepper
             InitialStep = new Grid(values);
         }
 
-        public List<Grid> StepResults = new();
-        public void FindAnswer(Action<string, Grid, Grid> print)
+        public List<Step> StepResults = new();
+        public void FindAnswer()
         {
             Grid currentStep = InitialStep.Copy();
             bool updated;
 
-            currentStep.RemoveAnsweredSuggestions();
-            Step(currentStep, print, InitialStep);
+            currentStep.AddPossibleSuggestions();
+            Grid newStep = currentStep.Copy();
+            StepResults.Add(new Step("Possible suggestions added", newStep));
 
             do
             {
                 updated = false;
 
-                foreach (var step in steps)
+                foreach (IStepHandler stepHandler in stepHandlers)
                 {
-                    updated |= step.MakeChange(currentStep);
+                    updated |= stepHandler.MakeChange(currentStep);
                     if (!updated)
                         continue;
-                    Step(currentStep, print);
+
+                    newStep = currentStep.Copy();
+                    StepResults.Add(new Step(stepHandler.GetComment(), newStep));
                     break;
                 }
             }
             while (updated);
 
             InitialStep.Dispose();
-            foreach (var grid in StepResults)
-                grid.Dispose();
-        }
-
-        private void Step(Grid currentStep, Action<string, Grid, Grid> print, Grid previous = null)
-        {
-            Grid newStep = currentStep.Copy();
-            print("step", newStep, previous ?? StepResults.LastOrDefault());
-            StepResults.Add(newStep);
+            foreach (var step in StepResults)
+                step.Grid.Dispose();
         }
     }
 }

@@ -30,7 +30,7 @@
             RemoveAnsweredSuggestions(cell.Coordinates.AdjacentIndices);
         }
 
-        public void RemoveAnsweredSuggestions()
+        public void AddPossibleSuggestions()
         {
             byte[] indices = Enumerable.Range(0, 81).Select(i => (byte)i).ToArray();
 

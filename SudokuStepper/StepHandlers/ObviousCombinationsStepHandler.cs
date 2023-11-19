@@ -2,14 +2,21 @@
 
 namespace SudokuStepper.Steps
 {
-    public abstract class ObviousCombinationsStep : IStep
+    public abstract class ObviousCombinationsStepHandler : IStepHandler
     {
-        public string Name { get; }
+        public string Name => $"Obvious combination of {ObviousNumbersAmount}";
+
+        public string GetComment() => $"The \"{Name}\" step: " + 
+            (!UpdatedCells.Any() ? "nothing was updated" : $"cells {string.Join(", ", UpdatedCells)} are the only ones to have {string.Join(", ", Suggestions)} in one of their groups");
+
+        private List<Cell> UpdatedCells { get; } = new();
+        private byte[] Suggestions { get; set; }
 
         protected abstract byte ObviousNumbersAmount { get; }
 
         public bool MakeChange(Grid grid)
         {
+            UpdatedCells.Clear();
             bool changed = false;
             Cell[] selectedPossibleValues = grid.Cells.Where(cell => cell.GetSuggestions().Length == ObviousNumbersAmount).ToArray();
             foreach (Cell cell in selectedPossibleValues)
@@ -17,13 +24,25 @@ namespace SudokuStepper.Steps
                 byte[] suggestions = cell.GetSuggestions();
 
                 Cell[] vertical = grid.GetCells(cell.Coordinates.AdjacentColumnIndices).Where(c => !c.Answered).ToArray();
-                changed |= RemoveSuggestionsForOnlyPossible(grid, suggestions, vertical);
+                if (RemoveSuggestionsForOnlyPossible(grid, suggestions, vertical))
+                {
+                    UpdatedCells.Add(cell);
+                    return true;
+                }
 
                 Cell[] horizontal = grid.GetCells(cell.Coordinates.AdjacentRowIndices).Where(c => !c.Answered).ToArray();
-                changed |= RemoveSuggestionsForOnlyPossible(grid, suggestions, horizontal);
+                if (RemoveSuggestionsForOnlyPossible(grid, suggestions, horizontal))
+                {
+                    UpdatedCells.Add(cell);
+                    return true;
+                }
 
                 Cell[] square = grid.GetCells(cell.Coordinates.AdjacentSquareIndices).Where(c => !c.Answered).ToArray();
-                changed |= RemoveSuggestionsForOnlyPossible(grid, suggestions, square);
+                if (RemoveSuggestionsForOnlyPossible(grid, suggestions, square))
+                {
+                    UpdatedCells.Add(cell);
+                    return true;
+                }
             }
             return changed;
         }
@@ -43,6 +62,11 @@ namespace SudokuStepper.Steps
                         grid.RemoveSuggestion(groupCell.Coordinates.Index, suggestions);
                     }
                 }
+            }
+            if (changed)
+            {
+                UpdatedCells.AddRange(onlyPossibleCells);
+                Suggestions = suggestions;
             }
             return changed;
         }

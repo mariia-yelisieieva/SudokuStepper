@@ -28,34 +28,36 @@ byte[] task2 = new byte[]
     0, 4, 6, 2, 0, 0, 0, 0, 0
 }; // partial solution
 
-var game = new Game(new List<IStep>()
+var game = new Game(new List<IStepHandler>()
 {
-    new ObviousSingleStep(),
-    new LastPossibleStep(),
-    new ObviousCombinationOf2Step(),
-    new ObviousCombinationOf3Step(),
-    new ObviousCombinationOf4Step(),
+    new ObviousSingleStepHandler(),
+    new LastPossibleStepHandler(),
+    new ObviousCombinationOf2StepHandler(),
+    new ObviousCombinationOf3StepHandler(),
+    new ObviousCombinationOf4StepHandler(),
 });
 game.Initialize(task2);
 PrintGrid("Initial task", game.InitialStep);
 
-game.FindAnswer((name, grid, grid1) => PrintGridWithSuggestions(name, grid, grid1));
-//PrintGridWithSuggestions("Step 1", game.Steps.FirstOrDefault(), game.InitialStep);
-//for (int i = 1; i < game.Steps.Count; i++)
-//    PrintGridWithSuggestions("Step " + (i + 1), game.Steps[i], game.Steps[i - 1]);
+game.FindAnswer();
 
-PrintGrid("Result", game.StepResults.Last());
+PrintGridWithSuggestions("Step 1", game.StepResults.First(), game.InitialStep);
+for (int i = 1; i < game.StepResults.Count; i++)
+    PrintGridWithSuggestions("Step " + (i + 1), game.StepResults[i], game.StepResults[i - 1].Grid);
+
+PrintGrid("Result", game.StepResults.Last().Grid);
 
 Console.ReadLine();
 
 
-void PrintGridWithSuggestions(string name, Grid? grid, Grid? previousGrid = null)
+void PrintGridWithSuggestions(string name, Step? step, Grid? previousGrid = null)
 {
-    if (grid == null)
+    if (step == null)
         return;
     Console.ForegroundColor = ConsoleColor.Gray;
     Console.WriteLine();
     Console.WriteLine($"~~~~~~~~~~~~~~~~~~~~~~~~~~ {name} ~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    Console.WriteLine(step.Comment);
     Console.WriteLine();
 
     for (byte i = 0; i < 9; i++)
@@ -64,8 +66,8 @@ void PrintGridWithSuggestions(string name, Grid? grid, Grid? previousGrid = null
         {
             for (byte j = 0; j < 9; j++)
             {
-                string answer = grid.GetCellValueSymbol(i, j);
-                string[] suggestions = grid.GetCellSuggestionsSymbols(i, j);
+                string answer = step.Grid.GetCellValueSymbol(i, j);
+                string[] suggestions = step.Grid.GetCellSuggestionsSymbols(i, j);
                 string[] previousSuggestions = previousGrid?.GetCellSuggestionsSymbols(i, j);
 
                 if (answer != "_")

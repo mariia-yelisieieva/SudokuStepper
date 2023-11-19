@@ -58,6 +58,6 @@
             return copy;
         }
 
-        public override string ToString() => $"{Coordinates.X}, {Coordinates.Y}";
+        public override string ToString() => $"({Coordinates.X}, {Coordinates.Y})";
     }
 }

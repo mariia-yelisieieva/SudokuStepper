@@ -2,55 +2,60 @@
 
 namespace SudokuStepper.Steps
 {
-    public class LastPossibleStep : IStep
+    public class LastPossibleStepHandler : IStepHandler
     {
-        public string Name { get; }
+        public string Name => "Last possible";
+
+        public string GetComment() => $"The \"{Name}\" step: " + (UpdatedCell is null ? "nothing was updated" : $"cell {UpdatedCell} value is set to {UpdatedCell.Value}");
+
+        private Cell UpdatedCell { get; set; }
 
         public bool MakeChange(Grid grid)
         {
-            bool updated = false;
-            updated |= FillOnlyPossibleInColumns(grid);
-            updated |= FillOnlyPossibleInRows(grid);
-            updated |= FillOnlyPossibleInSquares(grid);
-            return updated;
+            if (FillOnlyPossibleInColumns(grid))
+                return true;
+            if (FillOnlyPossibleInRows(grid))
+                return true;
+            if (FillOnlyPossibleInSquares(grid))
+                return true;
+            return false;
         }
 
         private bool FillOnlyPossibleInColumns(Grid grid)
         {
-            bool updated = false;
             for (byte i = 0; i < 9; i++)
             {
                 byte[] columnIndices = Indices.GetColumnIndices(i);
-                updated |= FillOnlyPossible(grid, columnIndices);
+                if (FillOnlyPossible(grid, columnIndices))
+                    return true;
             }
-            return updated;
+            return false;
         }
 
         private bool FillOnlyPossibleInRows(Grid grid)
         {
-            bool updated = false;
             for (byte i = 0; i < 9; i++)
             {
                 byte[] rowIndices = Indices.GetRowIndices(i);
-                updated |= FillOnlyPossible(grid, rowIndices);
+                if (FillOnlyPossible(grid, rowIndices))
+                    return true;
             }
-            return updated;
+            return false;
         }
 
         private bool FillOnlyPossibleInSquares(Grid grid)
         {
-            bool updated = false;
             for (byte i = 0; i < 9; i++)
             {
                 byte[] squareIndices = Indices.GetSquareIndices(i);
-                updated |= FillOnlyPossible(grid, squareIndices);
+                if (FillOnlyPossible(grid, squareIndices))
+                    return true;
             }
-            return updated;
+            return false;
         }
 
         private bool FillOnlyPossible(Grid grid, byte[] columnIndices)
         {
-            bool updated = false;
             var cells = grid.GetCells(columnIndices);
             for (byte suggestion = 1; suggestion < 10; suggestion++)
             {
@@ -58,10 +63,11 @@ namespace SudokuStepper.Steps
                 if (cellIndices.Count == 1 && !grid.Cells[cellIndices[0]].Answered && grid.Cells[cellIndices[0]].Value != suggestion)
                 {
                     grid.Cells[cellIndices[0]].Value = suggestion;
-                    updated = true;
+                    UpdatedCell = grid.Cells[cellIndices[0]];
+                    return true;
                 }
             }
-            return updated;
+            return false;
         }
     }
 }
