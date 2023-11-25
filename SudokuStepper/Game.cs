@@ -25,7 +25,7 @@ namespace SudokuStepper
 
             currentStep.AddPossibleSuggestions();
             Grid newStep = currentStep.Copy();
-            StepResults.Add(new Step("Possible suggestions added", newStep));
+            StepResults.Add(new Step("Possible suggestions added", "Possible suggestions added", newStep));
 
             do
             {
@@ -38,7 +38,7 @@ namespace SudokuStepper
                         continue;
 
                     newStep = currentStep.Copy();
-                    StepResults.Add(new Step(stepHandler.GetComment(), newStep));
+                    StepResults.Add(new Step(stepHandler.Name, stepHandler.GetComment(), newStep));
                     break;
                 }
             }

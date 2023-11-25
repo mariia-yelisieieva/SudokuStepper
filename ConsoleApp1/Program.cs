@@ -53,7 +53,7 @@ byte[] task2 = new byte[]
 ServiceProvider serviceProvider = services.BuildServiceProvider();
 
 var game = serviceProvider.GetRequiredService<Game>();
-game.Initialize(task1);
+game.Initialize(task2);
 PrintGrid("Initial task", game.InitialStep);
 
 game.FindAnswer();
@@ -71,6 +71,9 @@ void PrintGridWithSuggestions(string name, Step? step, Grid? previousGrid = null
 {
     if (step == null)
         return;
+    //if (step.Name != "Pointing combination") 
+    //    return;
+
     Console.ForegroundColor = ConsoleColor.Gray;
     Console.WriteLine();
     Console.WriteLine($"~~~~~~~~~~~~~~~~~~~~~~~~~~ {name} ~~~~~~~~~~~~~~~~~~~~~~~~~~");
