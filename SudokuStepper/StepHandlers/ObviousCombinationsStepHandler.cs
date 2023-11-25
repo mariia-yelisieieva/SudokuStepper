@@ -16,6 +16,9 @@ namespace SudokuStepper.Steps
 
         public bool MakeChange(Grid grid)
         {
+            //
+            // TODO: Redo the algorithm to include "1,2", "2,3", "1,3" combination, not just "1,2,3", "1,2", "1,3"
+            //
             UpdatedCells.Clear();
             bool changed = false;
             Cell[] selectedPossibleValues = grid.Cells.Where(cell => cell.GetSuggestions().Length == ObviousNumbersAmount).ToArray();

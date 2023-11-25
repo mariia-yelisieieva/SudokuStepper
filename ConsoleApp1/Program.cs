@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using SudokuModel;
 using SudokuStepper;
+using SudokuStepper.StepHandlers;
 using SudokuStepper.Steps;
 using static Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions;
 
@@ -10,6 +11,7 @@ HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 IServiceCollection services = builder.Services
     .AddTransient<IStepHandler, ObviousSingleStepHandler>()
     .AddTransient<IStepHandler, LastPossibleStepHandler>()
+    .AddTransient<IStepHandler, PointingCombinationStepHandler>()
     .AddTransient<IStepHandler, ObviousCombinationOf2StepHandler>()
     .AddTransient<IStepHandler, ObviousCombinationOf3StepHandler>()
     .AddTransient<IStepHandler, ObviousCombinationOf4StepHandler>()
@@ -51,7 +53,7 @@ byte[] task2 = new byte[]
 ServiceProvider serviceProvider = services.BuildServiceProvider();
 
 var game = serviceProvider.GetRequiredService<Game>();
-game.Initialize(task2);
+game.Initialize(task1);
 PrintGrid("Initial task", game.InitialStep);
 
 game.FindAnswer();
