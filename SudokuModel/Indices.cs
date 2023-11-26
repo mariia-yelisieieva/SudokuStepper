@@ -80,7 +80,7 @@
             var result = new List<byte>();
 
             byte i = (byte)(currentIndex % 9);
-            while (i < 80)
+            while (i < 81)
             {
                 result.Add(i);
                 i += 9;
