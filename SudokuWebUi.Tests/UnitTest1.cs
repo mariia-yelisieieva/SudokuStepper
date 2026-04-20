@@ -19,16 +19,16 @@ public class UnitTest1 : IClassFixture<WebApplicationFactory<Program>>
     public async Task HomePage_ReturnsVisualizerShell()
     {
         string html = await client.GetStringAsync("/");
-        Assert.Contains("Sudoku Step Visualizer", html);
-        Assert.Contains("id=\"grid\"", html);
+        Assert.Contains("<app-root></app-root>", html);
+        Assert.Contains("main-", html);
     }
 
     [Fact]
-    public async Task Config_ReturnsApiBaseUrl()
+    public async Task UnknownRoute_FallsBackToAngularShell()
     {
-        var response = await client.GetAsync("/config");
+        var response = await client.GetAsync("/solver");
         response.EnsureSuccessStatusCode();
         string body = await response.Content.ReadAsStringAsync();
-        Assert.Contains("apiBaseUrl", body);
+        Assert.Contains("<app-root></app-root>", body);
     }
 }

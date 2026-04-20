@@ -1,0 +1,73 @@
+<main class="pageRoot">
+  <mat-card class="heroCard">
+    <mat-card-header>
+      <mat-card-title>Sudoku Step Visualizer</mat-card-title>
+      <mat-card-subtitle>Modern Angular UI with step-by-step candidate diffs</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="apiInfo">API: {{ apiBaseUrl }}</div>
+      <mat-form-field appearance="outline" class="fullWidth">
+        <mat-label>Puzzle values (81 digits, use 0 for empty)</mat-label>
+        <textarea matInput rows="4" [(ngModel)]="puzzleInput"></textarea>
+      </mat-form-field>
+      <div class="controlRow">
+        <button mat-stroked-button color="primary" (click)="loadExample()" [disabled]="isBusy">
+          <mat-icon>auto_fix_high</mat-icon>
+          Load Example
+        </button>
+        <button mat-flat-button color="primary" (click)="solve()" [disabled]="isBusy">
+          <mat-icon>play_arrow</mat-icon>
+          Solve
+        </button>
+      </div>
+      <div class="statusText">{{ status }}</div>
+      @if (isBusy) {
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  @if (currentSnapshot; as snapshot) {
+    <mat-card class="stepCard">
+      <mat-card-content>
+        <div class="stepNav">
+          <button mat-icon-button (click)="goPrev()" [disabled]="!canGoPrev" aria-label="Previous step">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+          <mat-slider min="0" [max]="steps.length" step="1" discrete class="stepSlider">
+            <input matSliderThumb [ngModel]="currentIndex" (valueChange)="onSliderChange($event)" />
+          </mat-slider>
+          <button mat-icon-button (click)="goNext()" [disabled]="!canGoNext" aria-label="Next step">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
+        <div class="stepLabel">{{ currentStepLabel }}</div>
+        <div class="stepComment">{{ snapshot.comment }}</div>
+
+        <section class="grid">
+          @for (cell of snapshot.grid.cells; track $index) {
+            <div [ngClass]="getCellClasses($index, cell.value, cell.valueChanged)">
+              @if (cell.value > 0) {
+                <span class="value">{{ cell.value }}</span>
+              } @else {
+                <div class="candGrid">
+                  @for (candidate of [1, 2, 3, 4, 5, 6, 7, 8, 9]; track candidate) {
+                    @if (cell.removedCandidates.includes(candidate)) {
+                      <span class="cand removed">x</span>
+                    } @else if (cell.candidates.includes(candidate)) {
+                      <span class="cand present" [class.added]="cell.addedCandidates.includes(candidate)">
+                        {{ candidate }}
+                      </span>
+                    } @else {
+                      <span class="cand empty">_</span>
+                    }
+                  }
+                </div>
+              }
+            </div>
+          }
+        </section>
+      </mat-card-content>
+    </mat-card>
+  }
+</main>
