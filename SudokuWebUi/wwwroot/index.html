@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sudoku Step Visualizer</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <main>
+        <h1>Sudoku Step Visualizer</h1>
+        <p class="subtitle">Full step and candidate diff view from solver API.</p>
+
+        <section class="controls">
+            <label for="puzzleInput">Puzzle values (81 digits, use 0 for empty)</label>
+            <textarea id="puzzleInput" rows="4"></textarea>
+            <div class="controlRow">
+                <button id="loadExampleBtn">Load Example</button>
+                <button id="solveBtn">Solve</button>
+            </div>
+            <div id="status"></div>
+        </section>
+
+        <section class="stepNav">
+            <button id="prevStepBtn">Previous</button>
+            <input id="stepRange" type="range" min="0" max="0" value="0" />
+            <button id="nextStepBtn">Next</button>
+            <div id="stepLabel">Initial grid</div>
+            <div id="stepComment"></div>
+        </section>
+
+        <section>
+            <div id="grid" class="grid"></div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

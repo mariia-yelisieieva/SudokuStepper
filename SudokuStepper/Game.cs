@@ -14,6 +14,10 @@ namespace SudokuStepper
         public Grid InitialStep;
         public void Initialize(params byte[] values)
         {
+            InitialStep?.Dispose();
+            foreach (var step in StepResults)
+                step.Grid.Dispose();
+            StepResults.Clear();
             InitialStep = new Grid(values);
         }
 
@@ -44,9 +48,7 @@ namespace SudokuStepper
             }
             while (updated);
 
-            InitialStep.Dispose();
-            foreach (var step in StepResults)
-                step.Grid.Dispose();
+            currentStep.Dispose();
         }
     }
 }

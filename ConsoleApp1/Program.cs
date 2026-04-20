@@ -71,7 +71,7 @@ void PrintGridWithSuggestions(string name, Step? step, Grid? previousGrid = null
 {
     if (step == null)
         return;
-    //if (step.Name != "Pointing combination") 
+    //if (step.Name != "Obvious single")
     //    return;
 
     Console.ForegroundColor = ConsoleColor.Gray;
