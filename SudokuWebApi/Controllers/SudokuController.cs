@@ -9,10 +9,12 @@ namespace SudokuWebApi.Controllers;
 public sealed class SudokuController : ControllerBase
 {
     private readonly SudokuSolverService solverService;
+    private readonly ILogger<SudokuController> logger;
 
-    public SudokuController(SudokuSolverService solverService)
+    public SudokuController(SudokuSolverService solverService, ILogger<SudokuController> logger)
     {
         this.solverService = solverService;
+        this.logger = logger;
     }
 
     [HttpPost("solve")]
@@ -20,6 +22,8 @@ public sealed class SudokuController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public ActionResult<SolveResponse> Solve([FromBody] SolveRequest request)
     {
+        logger.LogInformation("solve request received");
+
         if (request.Values is null || request.Values.Length != 81)
             return BadRequest("The payload must contain exactly 81 values.");
 
