@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -11,7 +11,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSliderModule } from '@angular/material/slider';
 import { finalize } from 'rxjs';
 import { environment } from '../environments/environment';
-import { GridSnapshot, StepSnapshot, SudokuApiService } from './sudoku-api.service';
+import { CellState, GridSnapshot, StepSnapshot, SudokuApiService } from './sudoku-api.service';
 
 @Component({
   selector: 'app-root',
@@ -40,7 +40,10 @@ export class App {
   steps: StepSnapshot[] = [];
   currentIndex = 0;
 
-  constructor(private readonly sudokuApi: SudokuApiService) {}
+  constructor(
+    private readonly sudokuApi: SudokuApiService,
+    private readonly changeDetectorRef: ChangeDetectorRef
+  ) {}
 
   get currentSnapshot(): { name: string; comment: string; grid: GridSnapshot } | null {
     if (!this.initialGrid) {
@@ -108,6 +111,7 @@ export class App {
           this.steps = response.steps;
           this.currentIndex = 0;
           this.status = `Solved. Steps: ${response.steps.length}. Completed: ${response.isSolved}.`;
+          this.changeDetectorRef.detectChanges();
         },
         error: (error: HttpErrorResponse) => {
           const message =
@@ -115,6 +119,7 @@ export class App {
               ? error.error
               : error.error?.title ?? error.error?.message ?? error.message ?? 'Unexpected error.';
           this.status = message;
+          this.changeDetectorRef.detectChanges();
         }
       });
   }
@@ -148,6 +153,22 @@ export class App {
       boxBottom: row % 3 === 2,
       boxRight: col % 3 === 2
     };
+  }
+
+  getCandidateState(cell: CellState, candidate: number): 'added' | 'removed' | 'unchanged' {
+    if (cell.removedCandidates.includes(candidate)) {
+      return 'removed';
+    }
+
+    if (cell.candidates.includes(candidate) && cell.addedCandidates.includes(candidate)) {
+      return 'added';
+    }
+
+    return 'unchanged';
+  }
+
+  isCandidatePresent(cell: CellState, candidate: number): boolean {
+    return cell.candidates.includes(candidate);
   }
 
   private sanitizePuzzle(raw: string): string {

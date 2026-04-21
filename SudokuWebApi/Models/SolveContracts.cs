@@ -27,8 +27,8 @@ public sealed class GridSnapshotDto
 public sealed class CellStateDto
 {
     public byte Value { get; init; }
-    public byte[] Candidates { get; init; } = Array.Empty<byte>();
+    public int[] Candidates { get; init; } = Array.Empty<int>();
     public bool ValueChanged { get; init; }
-    public byte[] AddedCandidates { get; init; } = Array.Empty<byte>();
-    public byte[] RemovedCandidates { get; init; } = Array.Empty<byte>();
+    public int[] AddedCandidates { get; init; } = Array.Empty<int>();
+    public int[] RemovedCandidates { get; init; } = Array.Empty<int>();
 }

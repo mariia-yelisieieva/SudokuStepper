@@ -35,7 +35,7 @@
             <mat-icon>chevron_left</mat-icon>
           </button>
           <mat-slider min="0" [max]="steps.length" step="1" discrete class="stepSlider">
-            <input matSliderThumb [ngModel]="currentIndex" (valueChange)="onSliderChange($event)" />
+            <input matSliderThumb [ngModel]="currentIndex" (ngModelChange)="onSliderChange($event)" />
           </mat-slider>
           <button mat-icon-button (click)="goNext()" [disabled]="!canGoNext" aria-label="Next step">
             <mat-icon>chevron_right</mat-icon>
@@ -52,14 +52,14 @@
               } @else {
                 <div class="candGrid">
                   @for (candidate of [1, 2, 3, 4, 5, 6, 7, 8, 9]; track candidate) {
-                    @if (cell.removedCandidates.includes(candidate)) {
+                    @if (getCandidateState(cell, candidate) === 'removed') {
                       <span class="cand removed">x</span>
-                    } @else if (cell.candidates.includes(candidate)) {
-                      <span class="cand present" [class.added]="cell.addedCandidates.includes(candidate)">
+                    } @else if (isCandidatePresent(cell, candidate)) {
+                      <span class="cand" [class.added]="getCandidateState(cell, candidate) === 'added'" [class.unchanged]="getCandidateState(cell, candidate) === 'unchanged'">
                         {{ candidate }}
                       </span>
                     } @else {
-                      <span class="cand empty">_</span>
+                      <span class="cand unchanged">_</span>
                     }
                   }
                 </div>

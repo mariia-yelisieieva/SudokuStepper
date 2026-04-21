@@ -22,7 +22,7 @@ public sealed class SudokuController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public ActionResult<SolveResponse> Solve([FromBody] SolveRequest request)
     {
-        logger.LogInformation("solve request received");
+        logger.LogInformation("solve request received at " + DateTime.Now.ToString("HH:mm:ss dd-MM-yyyy"));
 
         if (request.Values is null || request.Values.Length != 81)
             return BadRequest("The payload must contain exactly 81 values.");

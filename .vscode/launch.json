@@ -1,0 +1,72 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+          "name": "Launch SudokuWebApi",
+          "type": "coreclr",
+          "request": "launch",
+          "program": "${workspaceFolder}/SudokuWebApi/bin/Debug/net10.0/SudokuWebApi.dll",
+          "cwd": "${workspaceFolder}/SudokuWebApi",
+          "env": {
+            "ASPNETCORE_ENVIRONMENT": "Development",
+            "ASPNETCORE_URLS": "https://localhost:7271;http://localhost:5027"
+          },
+          "launchSettingsProfile": "SudokuWebApi",
+          "serverReadyAction": {
+            "action": "openExternally",
+            "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+            "uriFormat": "%s/swagger"
+          }
+        },
+        {
+          "name": "Launch SudokuWebUi",
+          "type": "coreclr",
+          "request": "launch",
+          "program": "${workspaceFolder}/SudokuWebUi/bin/Debug/net10.0/SudokuWebUi.dll",
+          "cwd": "${workspaceFolder}/SudokuWebUi",
+          "env": {
+            "ASPNETCORE_ENVIRONMENT": "Development",
+            "ASPNETCORE_URLS": "https://localhost:7066;http://localhost:5149"
+          },
+          "launchSettingsProfile": "SudokuWebUi",
+          "serverReadyAction": {
+            "action": "openExternally",
+            "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+          }
+        },
+        {
+            "name": ".NET Core Launch (web)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/SudokuWebApi/bin/Debug/net10.0/SudokuWebApi.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/SudokuWebApi",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
+            "name": ".NET Core Attach",
+            "type": "coreclr",
+            "request": "attach"
+        }
+    ],
+    "compounds": [
+      {
+        "name": "Launch API + UI",
+        "configurations": ["Launch SudokuWebApi", "Launch SudokuWebUi"]
+      }
+    ]
+}

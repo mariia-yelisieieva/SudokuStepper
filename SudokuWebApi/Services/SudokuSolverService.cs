@@ -50,14 +50,14 @@ public sealed class SudokuSolverService
         for (byte i = 0; i < current.Cells.Length; i++)
         {
             var currentCell = current.Cells[i];
-            byte[] candidates = currentCell.GetSuggestions().OrderBy(x => x).ToArray();
+            int[] candidates = currentCell.GetSuggestions().OrderBy(x => x).Select(x => (int)x).ToArray();
 
             byte previousValue = 0;
-            byte[] previousCandidates = Array.Empty<byte>();
+            int[] previousCandidates = Array.Empty<int>();
             if (previous != null)
             {
                 previousValue = previous.Cells[i].Value;
-                previousCandidates = previous.Cells[i].GetSuggestions().OrderBy(x => x).ToArray();
+                previousCandidates = previous.Cells[i].GetSuggestions().OrderBy(x => x).Select(x => (int)x).ToArray();
             }
 
             cells.Add(new CellStateDto

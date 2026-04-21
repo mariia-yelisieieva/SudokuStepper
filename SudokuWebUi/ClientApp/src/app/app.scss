@@ -62,12 +62,12 @@
   display: grid;
   grid-template-columns: repeat(9, minmax(0, 1fr));
   gap: 2px;
-  background: rgb(89, 89, 89);
-  border: 2px solid rgb(120, 120, 120);
+  background: #c9c9c9;
+  border: 2px solid #9a9a9a;
 }
 
 .cell {
-  background: rgb(19, 19, 19);
+  background: #ffffff;
   min-height: 72px;
   position: relative;
   display: grid;
@@ -78,10 +78,11 @@
 .cell.solved .value {
   font-size: 30px;
   font-weight: 700;
+  color: #000000;
 }
 
 .cell.solved.valueChanged .value {
-  color: #2e7d32;
+  color: #00c853;
 }
 
 .candGrid {
@@ -97,15 +98,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(255, 255, 255, 0.55);
+  color: #6f6f6f;
 }
 
-.cand.empty {
-  color: rgba(255, 255, 255, 0.2);
+.cand.unchanged {
+  color: #7b7b7b;
 }
 
 .cand.added {
-  color: #4caf50;
+  color: #00c853;
   font-weight: 700;
 }
 
@@ -115,19 +116,19 @@
 }
 
 .boxTop {
-  border-top: 2px solid rgb(120, 120, 120);
+  border-top: 2px solid #9a9a9a;
 }
 
 .boxLeft {
-  border-left: 2px solid rgb(120, 120, 120);
+  border-left: 2px solid #9a9a9a;
 }
 
 .boxBottom {
-  border-bottom: 2px solid rgb(120, 120, 120);
+  border-bottom: 2px solid #9a9a9a;
 }
 
 .boxRight {
-  border-right: 2px solid rgb(120, 120, 120);
+  border-right: 2px solid #9a9a9a;
 }
 
 @media (max-width: 900px) {
