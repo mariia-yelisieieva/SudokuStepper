@@ -1,0 +1,38 @@
+<main class="pageRoot">
+  <mat-card class="heroCard">
+    <mat-card-header>
+      <mat-card-title>Sudoku Step Visualizer</mat-card-title>
+      <mat-card-subtitle>Modern Angular UI with step-by-step candidate diffs</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="apiInfo">API: {{ apiBaseUrl }}</div>
+      <mat-form-field appearance="outline" class="fullWidth">
+        <mat-label>Puzzle values (81 digits, use 0 for empty)</mat-label>
+        <textarea matInput rows="4" [(ngModel)]="puzzleInput"></textarea>
+      </mat-form-field>
+      <div class="controlRow">
+        <button mat-stroked-button color="primary" (click)="loadExample()" [disabled]="isBusy">
+          <mat-icon>auto_fix_high</mat-icon>
+          Load Example
+        </button>
+        <button mat-flat-button color="primary" (click)="solve()" [disabled]="isBusy">
+          <mat-icon>play_arrow</mat-icon>
+          Solve
+        </button>
+      </div>
+      <div class="statusText">{{ status }}</div>
+      @if (isBusy) {
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  @if (currentSnapshot; as snapshot) {
+    <app-step-viewer
+      [snapshot]="snapshot"
+      [stepsLength]="steps.length"
+      [currentIndex]="currentIndex"
+      (currentIndexChange)="onSliderChange($event)"
+    />
+  }
+</main>

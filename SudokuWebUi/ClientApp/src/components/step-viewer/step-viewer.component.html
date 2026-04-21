@@ -1,0 +1,41 @@
+<mat-card class="stepCard">
+  <mat-card-content>
+    <div class="stepNav">
+      <button mat-icon-button (click)="goPrev()" [disabled]="!canGoPrev" aria-label="Previous step">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <mat-slider min="0" [max]="stepsLength" step="1" discrete class="stepSlider">
+        <input matSliderThumb [ngModel]="currentIndex" (ngModelChange)="onSliderChange($event)" />
+      </mat-slider>
+      <button mat-icon-button (click)="goNext()" [disabled]="!canGoNext" aria-label="Next step">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+    <div class="stepLabel">{{ currentStepLabel }}</div>
+    <div class="stepComment">{{ snapshot.comment }}</div>
+
+    <section class="grid">
+      @for (cell of snapshot.grid.cells; track $index) {
+        <div [ngClass]="getCellClasses($index, cell.value, cell.valueChanged)">
+          @if (cell.value > 0) {
+            <span class="value">{{ cell.value }}</span>
+          } @else {
+            <div class="candGrid">
+              @for (candidate of [1, 2, 3, 4, 5, 6, 7, 8, 9]; track candidate) {
+                @if (getCandidateState(cell, candidate) === 'removed') {
+                  <span class="cand removed">x</span>
+                } @else if (isCandidatePresent(cell, candidate)) {
+                  <span class="cand" [class.added]="getCandidateState(cell, candidate) === 'added'" [class.unchanged]="getCandidateState(cell, candidate) === 'unchanged'">
+                    {{ candidate }}
+                  </span>
+                } @else {
+                  <span class="cand unchanged">·</span>
+                }
+              }
+            </div>
+          }
+        </div>
+      }
+    </section>
+  </mat-card-content>
+</mat-card>

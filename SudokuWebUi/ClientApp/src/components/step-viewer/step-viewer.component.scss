@@ -1,39 +1,5 @@
-:host {
-  display: block;
-}
-
-.pageRoot {
-  max-width: 1180px;
-  margin: 24px auto 40px;
-  padding: 0 16px;
-  display: grid;
-  gap: 16px;
-}
-
-.heroCard,
 .stepCard {
   border-radius: 14px;
-}
-
-.apiInfo {
-  margin-bottom: 12px;
-  opacity: 0.8;
-  font-size: 12px;
-}
-
-.fullWidth {
-  width: 100%;
-}
-
-.controlRow {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.statusText {
-  margin-top: 10px;
-  margin-bottom: 10px;
 }
 
 .stepNav {

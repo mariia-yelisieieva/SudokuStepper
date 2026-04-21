@@ -8,10 +8,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSliderModule } from '@angular/material/slider';
 import { finalize } from 'rxjs';
-import { environment } from '../environments/environment';
-import { CellState, GridSnapshot, StepSnapshot, SudokuApiService } from './sudoku-api.service';
+import { environment } from '../../environments/environment';
+import { GridSnapshot, StepSnapshot, SudokuApiService } from '../../services/sudoku-api.service';
+import { StepViewerComponent } from '../step-viewer/step-viewer.component';
 
 @Component({
   selector: 'app-root',
@@ -24,7 +24,7 @@ import { CellState, GridSnapshot, StepSnapshot, SudokuApiService } from './sudok
     MatIconModule,
     MatInputModule,
     MatProgressBarModule,
-    MatSliderModule
+    StepViewerComponent
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
@@ -49,38 +49,11 @@ export class App {
     if (!this.initialGrid) {
       return null;
     }
-
     if (this.currentIndex === 0) {
-      return {
-        name: 'Initial grid',
-        comment: 'Input puzzle before solver steps',
-        grid: this.initialGrid
-      };
+      return { name: 'Initial grid', comment: 'Input puzzle before solver steps', grid: this.initialGrid };
     }
-
     const step = this.steps[this.currentIndex - 1];
-    return {
-      name: step.name,
-      comment: step.comment ?? '',
-      grid: step.grid
-    };
-  }
-
-  get currentStepLabel(): string {
-    const snapshot = this.currentSnapshot;
-    if (!snapshot) {
-      return 'Initial grid (0/0)';
-    }
-
-    return `${snapshot.name} (${this.currentIndex}/${this.steps.length})`;
-  }
-
-  get canGoPrev(): boolean {
-    return this.currentIndex > 0;
-  }
-
-  get canGoNext(): boolean {
-    return this.currentIndex < this.steps.length;
+    return { name: step.name, comment: step.comment ?? '', grid: step.grid };
   }
 
   get apiBaseUrl(): string {
@@ -97,7 +70,6 @@ export class App {
       this.status = 'Puzzle must contain exactly 81 digits.';
       return;
     }
-
     const values = cleaned.split('').map((x) => Number.parseInt(x, 10));
     this.isBusy = true;
     this.status = 'Solving...';
@@ -114,61 +86,17 @@ export class App {
           this.changeDetectorRef.detectChanges();
         },
         error: (error: HttpErrorResponse) => {
-          const message =
+          this.status =
             typeof error.error === 'string'
               ? error.error
               : error.error?.title ?? error.error?.message ?? error.message ?? 'Unexpected error.';
-          this.status = message;
           this.changeDetectorRef.detectChanges();
         }
       });
   }
 
-  goPrev(): void {
-    if (this.canGoPrev) {
-      this.currentIndex -= 1;
-    }
-  }
-
-  goNext(): void {
-    if (this.canGoNext) {
-      this.currentIndex += 1;
-    }
-  }
-
   onSliderChange(value: number): void {
     this.currentIndex = value ?? 0;
-  }
-
-  getCellClasses(index: number, value: number, valueChanged: boolean): Record<string, boolean> {
-    const row = Math.floor(index / 9);
-    const col = index % 9;
-
-    return {
-      cell: true,
-      solved: value > 0,
-      valueChanged,
-      boxTop: row % 3 === 0,
-      boxLeft: col % 3 === 0,
-      boxBottom: row % 3 === 2,
-      boxRight: col % 3 === 2
-    };
-  }
-
-  getCandidateState(cell: CellState, candidate: number): 'added' | 'removed' | 'unchanged' {
-    if (cell.removedCandidates.includes(candidate)) {
-      return 'removed';
-    }
-
-    if (cell.candidates.includes(candidate) && cell.addedCandidates.includes(candidate)) {
-      return 'added';
-    }
-
-    return 'unchanged';
-  }
-
-  isCandidatePresent(cell: CellState, candidate: number): boolean {
-    return cell.candidates.includes(candidate);
   }
 
   private sanitizePuzzle(raw: string): string {
