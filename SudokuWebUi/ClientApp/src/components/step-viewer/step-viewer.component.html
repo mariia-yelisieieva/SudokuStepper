@@ -16,7 +16,7 @@
 
     <section class="grid">
       @for (cell of snapshot.grid.cells; track $index) {
-        <div [ngClass]="getCellClasses($index, cell.value, cell.valueChanged)">
+        <div [ngClass]="getCellClasses($index, cell.value, cell.valueChanged, isGivenCell($index))">
           @if (cell.value > 0) {
             <span class="value">{{ cell.value }}</span>
           } @else {

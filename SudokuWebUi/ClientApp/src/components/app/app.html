@@ -30,6 +30,7 @@
   @if (currentSnapshot; as snapshot) {
     <app-step-viewer
       [snapshot]="snapshot"
+      [initialGrid]="initialGrid!"
       [stepsLength]="steps.length"
       [currentIndex]="currentIndex"
       (currentIndexChange)="onSliderChange($event)"

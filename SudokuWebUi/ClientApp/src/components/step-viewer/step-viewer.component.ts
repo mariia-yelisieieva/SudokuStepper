@@ -14,6 +14,7 @@ import { CellState, GridSnapshot } from '../../services/sudoku-api.service';
 })
 export class StepViewerComponent {
   @Input({ required: true }) snapshot!: { name: string; comment: string; grid: GridSnapshot };
+  @Input({ required: true }) initialGrid!: GridSnapshot;
   @Input({ required: true }) stepsLength = 0;
   @Input({ required: true }) currentIndex = 0;
   @Output() currentIndexChange = new EventEmitter<number>();
@@ -37,13 +38,18 @@ export class StepViewerComponent {
     this.currentIndexChange.emit(value ?? 0);
   }
 
-  getCellClasses(index: number, value: number, valueChanged: boolean): Record<string, boolean> {
+  isGivenCell(index: number): boolean {
+    return (this.initialGrid?.cells?.[index]?.value ?? 0) > 0;
+  }
+
+  getCellClasses(index: number, value: number, valueChanged: boolean, isGiven: boolean): Record<string, boolean> {
     const row = Math.floor(index / 9);
     const col = index % 9;
     return {
       cell: true,
       solved: value > 0,
       valueChanged,
+      given: value > 0 && isGiven,
       boxTop: row % 3 === 0,
       boxLeft: col % 3 === 0,
       boxBottom: row % 3 === 2,

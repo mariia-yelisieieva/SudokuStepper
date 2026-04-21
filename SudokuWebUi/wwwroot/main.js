@@ -51852,13 +51852,14 @@ function StepViewerComponent_For_17_Template(rf, ctx) {
     const cell_r1 = ctx.$implicit;
     const $index_r4 = ctx.$index;
     const ctx_r2 = \u0275\u0275nextContext();
-    \u0275\u0275property("ngClass", ctx_r2.getCellClasses($index_r4, cell_r1.value, cell_r1.valueChanged));
+    \u0275\u0275property("ngClass", ctx_r2.getCellClasses($index_r4, cell_r1.value, cell_r1.valueChanged, ctx_r2.isGivenCell($index_r4)));
     \u0275\u0275advance();
     \u0275\u0275conditional(cell_r1.value > 0 ? 1 : 2);
   }
 }
 var StepViewerComponent = class _StepViewerComponent {
   snapshot;
+  initialGrid;
   stepsLength = 0;
   currentIndex = 0;
   currentIndexChange = new EventEmitter();
@@ -51882,13 +51883,17 @@ var StepViewerComponent = class _StepViewerComponent {
   onSliderChange(value) {
     this.currentIndexChange.emit(value ?? 0);
   }
-  getCellClasses(index, value, valueChanged) {
+  isGivenCell(index) {
+    return (this.initialGrid?.cells?.[index]?.value ?? 0) > 0;
+  }
+  getCellClasses(index, value, valueChanged, isGiven) {
     const row = Math.floor(index / 9);
     const col = index % 9;
     return {
       cell: true,
       solved: value > 0,
       valueChanged,
+      given: value > 0 && isGiven,
       boxTop: row % 3 === 0,
       boxLeft: col % 3 === 0,
       boxBottom: row % 3 === 2,
@@ -51908,7 +51913,7 @@ var StepViewerComponent = class _StepViewerComponent {
   static \u0275fac = function StepViewerComponent_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _StepViewerComponent)();
   };
-  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _StepViewerComponent, selectors: [["app-step-viewer"]], inputs: { snapshot: "snapshot", stepsLength: "stepsLength", currentIndex: "currentIndex" }, outputs: { currentIndexChange: "currentIndexChange" }, decls: 18, vars: 6, consts: [[1, "stepCard"], [1, "stepNav"], ["mat-icon-button", "", "aria-label", "Previous step", 3, "click", "disabled"], ["min", "0", "step", "1", "discrete", "", 1, "stepSlider", 3, "max"], ["matSliderThumb", "", 3, "ngModelChange", "ngModel"], ["mat-icon-button", "", "aria-label", "Next step", 3, "click", "disabled"], [1, "stepLabel"], [1, "stepComment"], [1, "grid"], [3, "ngClass"], [1, "value"], [1, "candGrid"], [1, "cand", "removed"], [1, "cand", 3, "added", "unchanged"], [1, "cand", "unchanged"], [1, "cand"]], template: function StepViewerComponent_Template(rf, ctx) {
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _StepViewerComponent, selectors: [["app-step-viewer"]], inputs: { snapshot: "snapshot", initialGrid: "initialGrid", stepsLength: "stepsLength", currentIndex: "currentIndex" }, outputs: { currentIndexChange: "currentIndexChange" }, decls: 18, vars: 6, consts: [[1, "stepCard"], [1, "stepNav"], ["mat-icon-button", "", "aria-label", "Previous step", 3, "click", "disabled"], ["min", "0", "step", "1", "discrete", "", 1, "stepSlider", 3, "max"], ["matSliderThumb", "", 3, "ngModelChange", "ngModel"], ["mat-icon-button", "", "aria-label", "Next step", 3, "click", "disabled"], [1, "stepLabel"], [1, "stepComment"], [1, "grid"], [3, "ngClass"], [1, "value"], [1, "candGrid"], [1, "cand", "removed"], [1, "cand", 3, "added", "unchanged"], [1, "cand", "unchanged"], [1, "cand"]], template: function StepViewerComponent_Template(rf, ctx) {
     if (rf & 1) {
       \u0275\u0275elementStart(0, "mat-card", 0)(1, "mat-card-content")(2, "div", 1)(3, "button", 2);
       \u0275\u0275listener("click", function StepViewerComponent_Template_button_click_3_listener() {
@@ -51955,7 +51960,7 @@ var StepViewerComponent = class _StepViewerComponent {
       \u0275\u0275advance(2);
       \u0275\u0275repeater(ctx.snapshot.grid.cells);
     }
-  }, dependencies: [CommonModule, NgClass, FormsModule, DefaultValueAccessor, NgControlStatus, NgModel, MatCardModule, MatCard, MatCardContent, MatIconModule, MatIcon, MatSliderModule, MatSlider, MatSliderThumb], styles: ["\n.stepCard[_ngcontent-%COMP%] {\n  border-radius: 14px;\n}\n.stepNav[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: auto 1fr auto;\n  align-items: center;\n  gap: 8px;\n}\n.stepSlider[_ngcontent-%COMP%] {\n  width: 100%;\n}\n.stepLabel[_ngcontent-%COMP%] {\n  margin-top: 8px;\n  font-weight: 600;\n}\n.stepComment[_ngcontent-%COMP%] {\n  margin-top: 4px;\n  margin-bottom: 12px;\n  opacity: 0.85;\n}\n.grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(9, minmax(0, 1fr));\n  gap: 2px;\n  background: #c9c9c9;\n  border: 2px solid #9a9a9a;\n}\n.cell[_ngcontent-%COMP%] {\n  background: #ffffff;\n  min-height: 72px;\n  position: relative;\n  display: grid;\n  align-items: center;\n  justify-items: center;\n}\n.cell.solved[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  font-size: 30px;\n  font-weight: 700;\n  color: #000000;\n}\n.cell.solved.valueChanged[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  color: #00c853;\n}\n.candGrid[_ngcontent-%COMP%] {\n  width: 100%;\n  height: 100%;\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  grid-template-rows: repeat(3, 1fr);\n}\n.cand[_ngcontent-%COMP%] {\n  font-size: 12px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: #6f6f6f;\n}\n.cand.unchanged[_ngcontent-%COMP%] {\n  color: #7b7b7b;\n}\n.cand.added[_ngcontent-%COMP%] {\n  color: #00c853;\n  font-weight: 700;\n}\n.cand.removed[_ngcontent-%COMP%] {\n  color: #ef5350;\n  font-weight: 700;\n}\n.boxTop[_ngcontent-%COMP%] {\n  border-top: 2px solid #9a9a9a;\n}\n.boxLeft[_ngcontent-%COMP%] {\n  border-left: 2px solid #9a9a9a;\n}\n.boxBottom[_ngcontent-%COMP%] {\n  border-bottom: 2px solid #9a9a9a;\n}\n.boxRight[_ngcontent-%COMP%] {\n  border-right: 2px solid #9a9a9a;\n}\n@media (max-width: 900px) {\n  .cell[_ngcontent-%COMP%] {\n    min-height: 52px;\n  }\n  .cell.solved[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n    font-size: 24px;\n  }\n}\n/*# sourceMappingURL=step-viewer.component.css.map */"] });
+  }, dependencies: [CommonModule, NgClass, FormsModule, DefaultValueAccessor, NgControlStatus, NgModel, MatCardModule, MatCard, MatCardContent, MatIconModule, MatIcon, MatSliderModule, MatSlider, MatSliderThumb], styles: ["\n.stepCard[_ngcontent-%COMP%] {\n  border-radius: 14px;\n}\n.stepNav[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: auto 1fr auto;\n  align-items: center;\n  gap: 8px;\n}\n.stepSlider[_ngcontent-%COMP%] {\n  width: 100%;\n}\n.stepLabel[_ngcontent-%COMP%] {\n  margin-top: 8px;\n  font-weight: 600;\n}\n.stepComment[_ngcontent-%COMP%] {\n  margin-top: 4px;\n  margin-bottom: 12px;\n  opacity: 0.85;\n}\n.grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(9, minmax(0, 1fr));\n  gap: 2px;\n  background: #c9c9c9;\n  border: 2px solid #9a9a9a;\n}\n.cell[_ngcontent-%COMP%] {\n  background: #ffffff;\n  min-height: 72px;\n  position: relative;\n  display: grid;\n  align-items: center;\n  justify-items: center;\n}\n.cell.given[_ngcontent-%COMP%] {\n  background: #eef0f1;\n}\n.cell.solved[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  font-size: 30px;\n  font-weight: 700;\n  color: #111827;\n}\n.cell.solved.given[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  color: #111827;\n}\n.cell.solved.valueChanged[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  color: #00c853;\n}\n.candGrid[_ngcontent-%COMP%] {\n  width: 100%;\n  height: 100%;\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  grid-template-rows: repeat(3, 1fr);\n}\n.cand[_ngcontent-%COMP%] {\n  font-size: 12px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: #6f6f6f;\n}\n.cand.unchanged[_ngcontent-%COMP%] {\n  color: #7b7b7b;\n}\n.cand.added[_ngcontent-%COMP%] {\n  color: #00c853;\n  font-weight: 700;\n}\n.cand.removed[_ngcontent-%COMP%] {\n  color: #ef5350;\n  font-weight: 700;\n}\n.boxTop[_ngcontent-%COMP%] {\n  border-top: 2px solid #9a9a9a;\n}\n.boxLeft[_ngcontent-%COMP%] {\n  border-left: 2px solid #9a9a9a;\n}\n.boxBottom[_ngcontent-%COMP%] {\n  border-bottom: 2px solid #9a9a9a;\n}\n.boxRight[_ngcontent-%COMP%] {\n  border-right: 2px solid #9a9a9a;\n}\n@media (max-width: 900px) {\n  .cell[_ngcontent-%COMP%] {\n    min-height: 52px;\n  }\n  .cell.solved[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n    font-size: 24px;\n  }\n}\n/*# sourceMappingURL=step-viewer.component.css.map */"] });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(StepViewerComponent, [{
@@ -51978,7 +51983,7 @@ var StepViewerComponent = class _StepViewerComponent {
 \r
     <section class="grid">\r
       @for (cell of snapshot.grid.cells; track $index) {\r
-        <div [ngClass]="getCellClasses($index, cell.value, cell.valueChanged)">\r
+        <div [ngClass]="getCellClasses($index, cell.value, cell.valueChanged, isGivenCell($index))">\r
           @if (cell.value > 0) {\r
             <span class="value">{{ cell.value }}</span>\r
           } @else {\r
@@ -52001,8 +52006,11 @@ var StepViewerComponent = class _StepViewerComponent {
     </section>\r
   </mat-card-content>\r
 </mat-card>\r
-`, styles: ["/* src/components/step-viewer/step-viewer.component.scss */\n.stepCard {\n  border-radius: 14px;\n}\n.stepNav {\n  display: grid;\n  grid-template-columns: auto 1fr auto;\n  align-items: center;\n  gap: 8px;\n}\n.stepSlider {\n  width: 100%;\n}\n.stepLabel {\n  margin-top: 8px;\n  font-weight: 600;\n}\n.stepComment {\n  margin-top: 4px;\n  margin-bottom: 12px;\n  opacity: 0.85;\n}\n.grid {\n  display: grid;\n  grid-template-columns: repeat(9, minmax(0, 1fr));\n  gap: 2px;\n  background: #c9c9c9;\n  border: 2px solid #9a9a9a;\n}\n.cell {\n  background: #ffffff;\n  min-height: 72px;\n  position: relative;\n  display: grid;\n  align-items: center;\n  justify-items: center;\n}\n.cell.solved .value {\n  font-size: 30px;\n  font-weight: 700;\n  color: #000000;\n}\n.cell.solved.valueChanged .value {\n  color: #00c853;\n}\n.candGrid {\n  width: 100%;\n  height: 100%;\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  grid-template-rows: repeat(3, 1fr);\n}\n.cand {\n  font-size: 12px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: #6f6f6f;\n}\n.cand.unchanged {\n  color: #7b7b7b;\n}\n.cand.added {\n  color: #00c853;\n  font-weight: 700;\n}\n.cand.removed {\n  color: #ef5350;\n  font-weight: 700;\n}\n.boxTop {\n  border-top: 2px solid #9a9a9a;\n}\n.boxLeft {\n  border-left: 2px solid #9a9a9a;\n}\n.boxBottom {\n  border-bottom: 2px solid #9a9a9a;\n}\n.boxRight {\n  border-right: 2px solid #9a9a9a;\n}\n@media (max-width: 900px) {\n  .cell {\n    min-height: 52px;\n  }\n  .cell.solved .value {\n    font-size: 24px;\n  }\n}\n/*# sourceMappingURL=step-viewer.component.css.map */\n"] }]
+`, styles: ["/* src/components/step-viewer/step-viewer.component.scss */\n.stepCard {\n  border-radius: 14px;\n}\n.stepNav {\n  display: grid;\n  grid-template-columns: auto 1fr auto;\n  align-items: center;\n  gap: 8px;\n}\n.stepSlider {\n  width: 100%;\n}\n.stepLabel {\n  margin-top: 8px;\n  font-weight: 600;\n}\n.stepComment {\n  margin-top: 4px;\n  margin-bottom: 12px;\n  opacity: 0.85;\n}\n.grid {\n  display: grid;\n  grid-template-columns: repeat(9, minmax(0, 1fr));\n  gap: 2px;\n  background: #c9c9c9;\n  border: 2px solid #9a9a9a;\n}\n.cell {\n  background: #ffffff;\n  min-height: 72px;\n  position: relative;\n  display: grid;\n  align-items: center;\n  justify-items: center;\n}\n.cell.given {\n  background: #eef0f1;\n}\n.cell.solved .value {\n  font-size: 30px;\n  font-weight: 700;\n  color: #111827;\n}\n.cell.solved.given .value {\n  color: #111827;\n}\n.cell.solved.valueChanged .value {\n  color: #00c853;\n}\n.candGrid {\n  width: 100%;\n  height: 100%;\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  grid-template-rows: repeat(3, 1fr);\n}\n.cand {\n  font-size: 12px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: #6f6f6f;\n}\n.cand.unchanged {\n  color: #7b7b7b;\n}\n.cand.added {\n  color: #00c853;\n  font-weight: 700;\n}\n.cand.removed {\n  color: #ef5350;\n  font-weight: 700;\n}\n.boxTop {\n  border-top: 2px solid #9a9a9a;\n}\n.boxLeft {\n  border-left: 2px solid #9a9a9a;\n}\n.boxBottom {\n  border-bottom: 2px solid #9a9a9a;\n}\n.boxRight {\n  border-right: 2px solid #9a9a9a;\n}\n@media (max-width: 900px) {\n  .cell {\n    min-height: 52px;\n  }\n  .cell.solved .value {\n    font-size: 24px;\n  }\n}\n/*# sourceMappingURL=step-viewer.component.css.map */\n"] }]
   }], null, { snapshot: [{
+    type: Input,
+    args: [{ required: true }]
+  }], initialGrid: [{
     type: Input,
     args: [{ required: true }]
   }], stepsLength: [{
@@ -52060,7 +52068,7 @@ function App_Conditional_26_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r1 = \u0275\u0275nextContext();
-    \u0275\u0275property("snapshot", ctx)("stepsLength", ctx_r1.steps.length)("currentIndex", ctx_r1.currentIndex);
+    \u0275\u0275property("snapshot", ctx)("initialGrid", ctx_r1.initialGrid)("stepsLength", ctx_r1.steps.length)("currentIndex", ctx_r1.currentIndex);
   }
 }
 var App = class _App {
@@ -52125,7 +52133,7 @@ var App = class _App {
   static \u0275fac = function App_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _App)(\u0275\u0275directiveInject(SudokuApiService), \u0275\u0275directiveInject(ChangeDetectorRef));
   };
-  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _App, selectors: [["app-root"]], decls: 27, vars: 7, consts: [[1, "pageRoot"], [1, "heroCard"], [1, "apiInfo"], ["appearance", "outline", 1, "fullWidth"], ["matInput", "", "rows", "4", 3, "ngModelChange", "ngModel"], [1, "controlRow"], ["mat-stroked-button", "", "color", "primary", 3, "click", "disabled"], ["mat-flat-button", "", "color", "primary", 3, "click", "disabled"], [1, "statusText"], ["mode", "indeterminate"], [3, "snapshot", "stepsLength", "currentIndex"], [3, "currentIndexChange", "snapshot", "stepsLength", "currentIndex"]], template: function App_Template(rf, ctx) {
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _App, selectors: [["app-root"]], decls: 27, vars: 7, consts: [[1, "pageRoot"], [1, "heroCard"], [1, "apiInfo"], ["appearance", "outline", 1, "fullWidth"], ["matInput", "", "rows", "4", 3, "ngModelChange", "ngModel"], [1, "controlRow"], ["mat-stroked-button", "", "color", "primary", 3, "click", "disabled"], ["mat-flat-button", "", "color", "primary", 3, "click", "disabled"], [1, "statusText"], ["mode", "indeterminate"], [3, "snapshot", "initialGrid", "stepsLength", "currentIndex"], [3, "currentIndexChange", "snapshot", "initialGrid", "stepsLength", "currentIndex"]], template: function App_Template(rf, ctx) {
     if (rf & 1) {
       \u0275\u0275elementStart(0, "main", 0)(1, "mat-card", 1)(2, "mat-card-header")(3, "mat-card-title");
       \u0275\u0275text(4, "Sudoku Step Visualizer");
@@ -52168,7 +52176,7 @@ var App = class _App {
       \u0275\u0275elementEnd();
       \u0275\u0275conditionalCreate(25, App_Conditional_25_Template, 1, 0, "mat-progress-bar", 9);
       \u0275\u0275elementEnd()();
-      \u0275\u0275conditionalCreate(26, App_Conditional_26_Template, 1, 3, "app-step-viewer", 10);
+      \u0275\u0275conditionalCreate(26, App_Conditional_26_Template, 1, 4, "app-step-viewer", 10);
       \u0275\u0275elementEnd();
     }
     if (rf & 2) {
@@ -52227,7 +52235,7 @@ var App = class _App {
       MatInputModule,
       MatProgressBarModule,
       StepViewerComponent
-    ], template: '<main class="pageRoot">\r\n  <mat-card class="heroCard">\r\n    <mat-card-header>\r\n      <mat-card-title>Sudoku Step Visualizer</mat-card-title>\r\n      <mat-card-subtitle>Modern Angular UI with step-by-step candidate diffs</mat-card-subtitle>\r\n    </mat-card-header>\r\n    <mat-card-content>\r\n      <div class="apiInfo">API: {{ apiBaseUrl }}</div>\r\n      <mat-form-field appearance="outline" class="fullWidth">\r\n        <mat-label>Puzzle values (81 digits, use 0 for empty)</mat-label>\r\n        <textarea matInput rows="4" [(ngModel)]="puzzleInput"></textarea>\r\n      </mat-form-field>\r\n      <div class="controlRow">\r\n        <button mat-stroked-button color="primary" (click)="loadExample()" [disabled]="isBusy">\r\n          <mat-icon>auto_fix_high</mat-icon>\r\n          Load Example\r\n        </button>\r\n        <button mat-flat-button color="primary" (click)="solve()" [disabled]="isBusy">\r\n          <mat-icon>play_arrow</mat-icon>\r\n          Solve\r\n        </button>\r\n      </div>\r\n      <div class="statusText">{{ status }}</div>\r\n      @if (isBusy) {\r\n        <mat-progress-bar mode="indeterminate"></mat-progress-bar>\r\n      }\r\n    </mat-card-content>\r\n  </mat-card>\r\n\r\n  @if (currentSnapshot; as snapshot) {\r\n    <app-step-viewer\r\n      [snapshot]="snapshot"\r\n      [stepsLength]="steps.length"\r\n      [currentIndex]="currentIndex"\r\n      (currentIndexChange)="onSliderChange($event)"\r\n    />\r\n  }\r\n</main>\r\n', styles: ["/* src/components/app/app.scss */\n:host {\n  display: block;\n}\n.pageRoot {\n  max-width: 1180px;\n  margin: 24px auto 40px;\n  padding: 0 16px;\n  display: grid;\n  gap: 16px;\n}\n.heroCard {\n  border-radius: 14px;\n}\n.apiInfo {\n  margin-bottom: 12px;\n  opacity: 0.8;\n  font-size: 12px;\n}\n.fullWidth {\n  width: 100%;\n}\n.controlRow {\n  display: flex;\n  gap: 8px;\n  align-items: center;\n}\n.statusText {\n  margin-top: 10px;\n  margin-bottom: 10px;\n}\n/*# sourceMappingURL=app.css.map */\n"] }]
+    ], template: '<main class="pageRoot">\r\n  <mat-card class="heroCard">\r\n    <mat-card-header>\r\n      <mat-card-title>Sudoku Step Visualizer</mat-card-title>\r\n      <mat-card-subtitle>Modern Angular UI with step-by-step candidate diffs</mat-card-subtitle>\r\n    </mat-card-header>\r\n    <mat-card-content>\r\n      <div class="apiInfo">API: {{ apiBaseUrl }}</div>\r\n      <mat-form-field appearance="outline" class="fullWidth">\r\n        <mat-label>Puzzle values (81 digits, use 0 for empty)</mat-label>\r\n        <textarea matInput rows="4" [(ngModel)]="puzzleInput"></textarea>\r\n      </mat-form-field>\r\n      <div class="controlRow">\r\n        <button mat-stroked-button color="primary" (click)="loadExample()" [disabled]="isBusy">\r\n          <mat-icon>auto_fix_high</mat-icon>\r\n          Load Example\r\n        </button>\r\n        <button mat-flat-button color="primary" (click)="solve()" [disabled]="isBusy">\r\n          <mat-icon>play_arrow</mat-icon>\r\n          Solve\r\n        </button>\r\n      </div>\r\n      <div class="statusText">{{ status }}</div>\r\n      @if (isBusy) {\r\n        <mat-progress-bar mode="indeterminate"></mat-progress-bar>\r\n      }\r\n    </mat-card-content>\r\n  </mat-card>\r\n\r\n  @if (currentSnapshot; as snapshot) {\r\n    <app-step-viewer\r\n      [snapshot]="snapshot"\r\n      [initialGrid]="initialGrid!"\r\n      [stepsLength]="steps.length"\r\n      [currentIndex]="currentIndex"\r\n      (currentIndexChange)="onSliderChange($event)"\r\n    />\r\n  }\r\n</main>\r\n', styles: ["/* src/components/app/app.scss */\n:host {\n  display: block;\n}\n.pageRoot {\n  max-width: 1180px;\n  margin: 24px auto 40px;\n  padding: 0 16px;\n  display: grid;\n  gap: 16px;\n}\n.heroCard {\n  border-radius: 14px;\n}\n.apiInfo {\n  margin-bottom: 12px;\n  opacity: 0.8;\n  font-size: 12px;\n}\n.fullWidth {\n  width: 100%;\n}\n.controlRow {\n  display: flex;\n  gap: 8px;\n  align-items: center;\n}\n.statusText {\n  margin-top: 10px;\n  margin-bottom: 10px;\n}\n/*# sourceMappingURL=app.css.map */\n"] }]
   }], () => [{ type: SudokuApiService }, { type: ChangeDetectorRef }], null);
 })();
 (() => {
