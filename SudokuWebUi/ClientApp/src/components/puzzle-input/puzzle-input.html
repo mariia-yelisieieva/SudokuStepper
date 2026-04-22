@@ -1,0 +1,52 @@
+<mat-card class="inputCard">
+  <mat-card-content>
+    <p class="helpText">Use digits 1-9 for values. Enter 0 or - for empty cells.</p>
+
+    <section class="grid">
+      @for (index of cellIndexes; track index) {
+        <input
+          #gridCell
+          type="text"
+          inputmode="numeric"
+          maxlength="1"
+          [value]="displayCells[index]"
+          [ngClass]="getCellClasses(index)"
+          [disabled]="isBusy"
+          (input)="onCellInput(index, $event)"
+          (focus)="onCellFocus(index, $event)"
+          aria-label="Cell {{ index + 1 }}"
+        />
+      }
+    </section>
+
+    <div class="controlRow">
+      <button mat-stroked-button color="primary" [matMenuTriggerFor]="loadMenu" [disabled]="isBusy">
+        <mat-icon>auto_fix_high</mat-icon>
+        Load
+      </button>
+      <mat-menu #loadMenu="matMenu">
+        <button mat-menu-item (click)="loadPreset('easy')" [disabled]="isBusy">Easy</button>
+        <button mat-menu-item (click)="loadPreset('middle')" [disabled]="isBusy">Middle</button>
+        <button mat-menu-item (click)="loadPreset('hard')" [disabled]="isBusy">Hard</button>
+        <button mat-menu-item (click)="loadPreset('expert')" [disabled]="isBusy">Expert</button>
+        <button mat-menu-item (click)="loadPreset('master')" [disabled]="isBusy">Master</button>
+        <button mat-menu-item (click)="loadPreset('extreme')" [disabled]="isBusy">Extreme</button>
+      </mat-menu>
+
+      <button mat-stroked-button [disabled]="true">
+        <mat-icon>upload</mat-icon>
+        Import puzzle
+      </button>
+
+      <button mat-flat-button color="primary" (click)="triggerSolve()" [disabled]="isBusy">
+        <mat-icon>play_arrow</mat-icon>
+        Solve
+      </button>
+    </div>
+
+    <div class="statusText">{{ status }}</div>
+    @if (isBusy) {
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    }
+  </mat-card-content>
+</mat-card>

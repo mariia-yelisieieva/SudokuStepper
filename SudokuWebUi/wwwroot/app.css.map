@@ -1,7 +1,7 @@
 {
   "version": 3,
-  "sources": ["src/app/components/app/app.scss"],
-  "sourcesContent": [":host {\r\n  display: block;\r\n}\r\n\r\n.pageRoot {\r\n  max-width: 1180px;\r\n  margin: 24px auto 40px;\r\n  padding: 0 16px;\r\n  display: grid;\r\n  gap: 16px;\r\n}\r\n\r\n.heroCard {\r\n  border-radius: 14px;\r\n}\r\n\r\n.apiInfo {\r\n  margin-bottom: 12px;\r\n  opacity: 0.8;\r\n  font-size: 12px;\r\n}\r\n\r\n.fullWidth {\r\n  width: 100%;\r\n}\r\n\r\n.controlRow {\r\n  display: flex;\r\n  gap: 8px;\r\n  align-items: center;\r\n}\r\n\r\n.statusText {\r\n  margin-top: 10px;\r\n  margin-bottom: 10px;\r\n}\r\n"],
-  "mappings": ";AAAA;AACE,WAAA;;AAGF,CAAA;AACE,aAAA;AACA,UAAA,KAAA,KAAA;AACA,WAAA,EAAA;AACA,WAAA;AACA,OAAA;;AAGF,CAAA;AACE,iBAAA;;AAGF,CAAA;AACE,iBAAA;AACA,WAAA;AACA,aAAA;;AAGF,CAAA;AACE,SAAA;;AAGF,CAAA;AACE,WAAA;AACA,OAAA;AACA,eAAA;;AAGF,CAAA;AACE,cAAA;AACA,iBAAA;;",
+  "sources": ["src/components/app/app.scss"],
+  "sourcesContent": [":host {\r\n  display: block;\r\n}\r\n\r\n.pageRoot {\r\n  max-width: 1180px;\r\n  margin: 24px auto 40px;\r\n  padding: 0 16px;\r\n  display: grid;\r\n  gap: 16px;\r\n}\r\n\r\n.heroCard {\r\n  border-radius: 14px;\r\n}\r\n\r\n.apiInfo {\r\n  margin-bottom: 12px;\r\n  opacity: 0.8;\r\n  font-size: 12px;\r\n}\r\n"],
+  "mappings": ";AAAA;AACE,WAAA;;AAGF,CAAA;AACE,aAAA;AACA,UAAA,KAAA,KAAA;AACA,WAAA,EAAA;AACA,WAAA;AACA,OAAA;;AAGF,CAAA;AACE,iBAAA;;AAGF,CAAA;AACE,iBAAA;AACA,WAAA;AACA,aAAA;;",
   "names": []
 }

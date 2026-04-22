@@ -1,38 +1,26 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { finalize } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { GridSnapshot, StepSnapshot, SudokuApiService } from '../../services/sudoku-api.service';
-import { StepViewerComponent } from '../step-viewer/step-viewer.component';
+import { PuzzleInputComponent } from '../puzzle-input/puzzle-input';
+import { StepViewerComponent } from '../step-viewer/step-viewer';
 
 @Component({
   selector: 'app-root',
   imports: [
     CommonModule,
-    FormsModule,
-    MatButtonModule,
     MatCardModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatProgressBarModule,
+    PuzzleInputComponent,
     StepViewerComponent
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
 export class App {
-  private static readonly examplePuzzle = '200000001000906000000801720900300000008000204000000013103005009000700000046200000';
-
-  puzzleInput = App.examplePuzzle;
+  puzzleInput = '200000001000906000000801720900300000008000204000000013103005009000700000046200000';
   status = 'Ready.';
   isBusy = false;
 
@@ -60,10 +48,6 @@ export class App {
     return environment.apiBaseUrl;
   }
 
-  loadExample(): void {
-    this.puzzleInput = App.examplePuzzle;
-  }
-
   solve(): void {
     const cleaned = this.sanitizePuzzle(this.puzzleInput);
     if (cleaned.length !== 81) {
@@ -76,7 +60,12 @@ export class App {
 
     this.sudokuApi
       .solve(values)
-      .pipe(finalize(() => (this.isBusy = false)))
+      .pipe(
+        finalize(() => {
+          this.isBusy = false;
+          this.changeDetectorRef.detectChanges();
+        })
+      )
       .subscribe({
         next: (response) => {
           this.initialGrid = response.initialGrid;

@@ -9,8 +9,8 @@ import { CellState, GridSnapshot } from '../../services/sudoku-api.service';
 @Component({
   selector: 'app-step-viewer',
   imports: [CommonModule, FormsModule, MatCardModule, MatIconModule, MatSliderModule],
-  templateUrl: './step-viewer.component.html',
-  styleUrl: './step-viewer.component.scss'
+  templateUrl: './step-viewer.html',
+  styleUrl: './step-viewer.scss'
 })
 export class StepViewerComponent {
   @Input({ required: true }) snapshot!: { name: string; comment: string; grid: GridSnapshot };
